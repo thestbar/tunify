@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">JunkieTuner</string>
+    <string name="_freqLabel">0</string>
+    <string name="pitch_value">G#4</string>
+    <string name="strPitchValue">E2</string>
+    <string name="tuningButtonStr">TUNING</string>
+    <string name="tuning">Tuning</string>
+    <string name="muted">Muted</string>
+    <string name="switchMuted">Muted</string>
+    <string name="switchTextOn">Tuning</string>
+    <string name="switchTextOff">Muted</string>
+</resources>

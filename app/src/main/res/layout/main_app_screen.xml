@@ -1,0 +1,80 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <TextView
+        android:id="@+id/textViewPitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_round_border"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:padding="4sp"
+        android:text="@string/strPitchValue"
+        android:textAlignment="center"
+        android:textSize="42sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/tuningSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        android:text="@string/switchMuted"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.github.anastr.speedviewlib.SpeedView
+        android:id="@+id/speedView"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        app:sv_centerCircleColor="@color/white"
+        app:sv_centerCircleRadius="5dp"
+        app:sv_cutPadding="50dp"
+        app:sv_indicator="NeedleIndicator"
+        app:sv_indicatorColor="@color/material_dynamic_neutral40"
+        app:sv_markColor="@color/white"
+        app:sv_speedTextColor="@color/white"
+        app:sv_speedTextFormat="INTEGER"
+        app:sv_speedTextPadding="5dp"
+        app:sv_speedTextSize="30dp"
+        app:sv_speedometerMode="TOP"
+        app:sv_textColor="@color/white"
+        app:sv_textSize="10dp"
+        app:sv_tickTextFormat="INTEGER"
+        app:sv_unit="¢"
+        app:sv_unitTextColor="@color/white"
+        app:sv_unitTextSize="15dp"
+        app:sv_withIndicatorLight="false"
+        app:sv_withTremble="true" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
