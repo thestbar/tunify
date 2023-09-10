@@ -1,5 +1,7 @@
 package com.junkiedan.junkietuner.util.notes;
 
+import java.util.Objects;
+
 /**
  * Class that contains all the notes structure of the spectrum
  * that the algorithm can analyze. On this specific case the algorithm
@@ -9,7 +11,7 @@ package com.junkiedan.junkietuner.util.notes;
 public class NotesStructure {
 
     private Note[] allNotes;
-    private String[] notesAnno = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    private final String[] notesAnno = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
     public NotesStructure() {
         initNotes();
@@ -49,6 +51,20 @@ public class NotesStructure {
         for (Note note : allNotes) {
             System.out.println(note);
         }
+    }
+
+    /**
+     * TODO Implement Binary Search!
+     * @param noteName 0
+     * @return 0
+     */
+    public Note searchNote(String noteName) {
+        for (Note note : allNotes) {
+            if (Objects.equals(note.getName(), noteName)) {
+                return note;
+            }
+        }
+        return null;
     }
 
 }

@@ -30,8 +30,6 @@ android {
     }
 }
 
-
-
 dependencies {
     implementation group: 'org.jfree', name: 'jfreechart', version: '1.5.4'
     implementation 'androidx.appcompat:appcompat:1.6.1'

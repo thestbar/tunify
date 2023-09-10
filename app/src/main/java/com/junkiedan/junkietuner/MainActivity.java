@@ -3,8 +3,9 @@ package com.junkiedan.junkietuner;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -16,14 +17,11 @@ import com.github.anastr.speedviewlib.components.Section;
 import com.github.anastr.speedviewlib.components.Style;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.junkiedan.junkietuner.core.RecordingRunnable;
-import org.jetbrains.annotations.NotNull;
-import org.jfree.chart.axis.Tick;
-import org.jfree.chart.ui.TextAnchor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.atomic.AtomicBoolean;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private final static String SWITCH_TURNED_ON_STR = "Tuning";
     private final static String SWITCH_TURNED_OFF_STR = "Muted";
     private SpeedView speedView = null;
+    public final static long NEEDLE_ANIMATION_SPEED = 300;
 
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
@@ -73,48 +72,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startRecording() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
-            return;
-        }
-        buffer = new short[BUFFER_SIZE];
-        recorder = new AudioRecord(MediaRecorder.AudioSource.UNPROCESSED,
-                SAMPLING_RATE_IN_HZ,
-                CHANNEL_CONFIG,
-                AUDIO_FORMAT,
-                BUFFER_SIZE);
-        recorder.startRecording();
-        recordingInProgress.set(true);
-        recordingThread = new Thread(
-                new RecordingRunnable(
-                        this,
-                        recordingInProgress,
-                        recorder,
-                        pitchTextView,
-                        speedView,
-                        buffer),
-                "Recording Thread");
-        recordingThread.start();
-        tuningSwitch.setText(SWITCH_TURNED_ON_STR);
-    }
-
-    private void stopRecording() {
-        if(recorder == null) {
-            return;
-        }
-        recordingInProgress.set(false);
-        recorder.stop();
-        recorder.release();
-        recorder = null;
-        recordingThread = null;
-        pitchTextView.setText("");
-        tuningSwitch.setText(SWITCH_TURNED_OFF_STR);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.main_app_screen);
 
         tuningSwitch = findViewById(R.id.tuningSwitch);
@@ -168,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Section attributes
         speedView.clearSections();
-        Section mainSection = new Section(0f, 1f, Color.LTGRAY);
+        int speedViewSectionColorId = ContextCompat.getColor(this, R.color.custom_vanilla);
+        Section mainSection = new Section(0f, 1f, speedViewSectionColorId);
         mainSection.setStyle(Style.ROUND);
         speedView.addSections(mainSection);
         speedView.setSpeedometerWidth(8);
@@ -184,4 +148,43 @@ public class MainActivity extends AppCompatActivity {
         speedView.setTickPadding(20);
     }
 
+    private void startRecording() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+            return;
+        }
+        buffer = new short[BUFFER_SIZE];
+        recorder = new AudioRecord(MediaRecorder.AudioSource.UNPROCESSED,
+                SAMPLING_RATE_IN_HZ,
+                CHANNEL_CONFIG,
+                AUDIO_FORMAT,
+                BUFFER_SIZE);
+        recorder.startRecording();
+        recordingInProgress.set(true);
+        recordingThread = new Thread(
+                new RecordingRunnable(
+                        this,
+                        recordingInProgress,
+                        recorder,
+                        pitchTextView,
+                        speedView,
+                        buffer),
+                "Recording Thread");
+        recordingThread.start();
+        tuningSwitch.setText(SWITCH_TURNED_ON_STR);
+    }
+
+    private void stopRecording() {
+        if(recorder == null) {
+            return;
+        }
+        recordingInProgress.set(false);
+        recorder.stop();
+        recorder.release();
+        recorder = null;
+        recordingThread = null;
+        pitchTextView.setText("");
+        tuningSwitch.setText(SWITCH_TURNED_OFF_STR);
+        speedView.speedTo(0, NEEDLE_ANIMATION_SPEED);
+    }
 }

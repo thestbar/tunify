@@ -4,17 +4,17 @@
 
     <!-- View background color -->
     <solid
-        android:color="@color/custom_linen" >
+        android:color="@color/custom_wenge" >
     </solid>
 
     <!-- View border color and width -->
     <stroke
-        android:width="3sp"
-        android:color="@color/custom_wenge" >
+        android:width="2sp"
+        android:color="@color/custom_jet" >
     </stroke>
 
     <size
-        android:width="70sp"
-        android:height="70sp"/>
+        android:width="50sp"
+        android:height="50sp"/>
 
 </shape>

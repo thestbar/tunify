@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+<!--    Custom color palette -->
+    <color name="custom_gunmetal">#2B303A</color>
+    <color name="custom_non_photo_blue">#92DCE5</color>
+    <color name="custom_lavender_blush">#EEE5E9</color>
+    <color name="custom_gray">#7C7C7C</color>
+    <color name="custom_chili_red">#D64933</color>
+
+    <color name="custom_raisin_black">#231F20</color>
+    <color name="custom_jet">#231F20</color>
+    <color name="custom_wenge">#564D4E</color>
+    <color name="custom_taupe_gray">#8C7D7F</color>
+    <color name="custom_persian_red">#BB4430</color>
+    <color name="custom_jasper">#D1604D</color>
+    <color name="custom_verdigris">#7EBDC2</color>
+    <color name="custom_light_blue">#9ECED1</color>
+    <color name="custom_vanilla">#F3DFA2</color>
+    <color name="custom_linen">#EFE6DD</color>
 </resources>

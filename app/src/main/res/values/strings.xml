@@ -9,4 +9,17 @@
     <string name="switchMuted">Muted</string>
     <string name="switchTextOn">Tuning</string>
     <string name="switchTextOff">Muted</string>
+    <string name="guitarImageViewAltStr">Guitar Headstock Image</string>
+    <string name="textViewNote6Str">E4</string>
+    <string name="textViewNote5Str">B4</string>
+    <string name="textViewNote4Str">G3</string>
+    <string name="textViewNote1Str">E2</string>
+    <string name="textViewNote2Str">A2</string>
+    <string name="textViewNote3Str">D3</string>
+    <string name="tuningsButtonStr">Tunings</string>
+    <string name="information_image_button_alt_str">Information Image Button</string>
+    <string name="freeTuneToggleStr">Free Tune Toggle</string>
+    <string name="freeTuneToggleOnStr">Free Tuning</string>
+    <string name="freeTuneToggleOffStr">Locked Tuning</string>
+    <string name="logoImgViewAltStr">Logo Image View</string>
 </resources>

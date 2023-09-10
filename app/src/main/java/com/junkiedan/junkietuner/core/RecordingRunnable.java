@@ -5,6 +5,7 @@ import android.media.AudioRecord;
 import android.widget.TextView;
 
 import com.github.anastr.speedviewlib.SpeedView;
+import com.junkiedan.junkietuner.MainActivity;
 import com.junkiedan.junkietuner.util.algorithms.NoteDetection;
 import com.junkiedan.junkietuner.util.algorithms.Yin;
 import com.junkiedan.junkietuner.util.notes.Note;
@@ -55,7 +56,7 @@ public class RecordingRunnable extends Thread {
 
             mainActivity.runOnUiThread(() -> {
                 pitchTextView.setText(closestNote.getName());
-                speedView.speedTo(Math.round(deltaInCents), 300);
+                speedView.speedTo(Math.round(deltaInCents), MainActivity.NEEDLE_ANIMATION_SPEED);
             });
         }
     }
