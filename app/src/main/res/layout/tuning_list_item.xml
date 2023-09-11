@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    >
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/tuningName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:id="@+id/tuningNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/delete_icon"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:background="@drawable/custom_selector_transparent_off_light_on"
+        android:contentDescription="@string/delete_item_button"
+        app:tint="@drawable/custom_selector_color_dark" />
+</LinearLayout>

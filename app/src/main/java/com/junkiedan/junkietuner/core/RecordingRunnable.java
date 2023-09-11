@@ -1,17 +1,16 @@
 package com.junkiedan.junkietuner.core;
 
+import static com.junkiedan.junkietuner.MainFragment.NEEDLE_ANIMATION_SPEED;
+
 import android.app.Activity;
 import android.media.AudioRecord;
 import android.widget.TextView;
 
 import com.github.anastr.speedviewlib.SpeedView;
-import com.junkiedan.junkietuner.MainActivity;
 import com.junkiedan.junkietuner.util.algorithms.NoteDetection;
 import com.junkiedan.junkietuner.util.algorithms.Yin;
 import com.junkiedan.junkietuner.util.notes.Note;
 import com.junkiedan.junkietuner.util.notes.NotesStructure;
-
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RecordingRunnable extends Thread {
@@ -56,7 +55,7 @@ public class RecordingRunnable extends Thread {
 
             mainActivity.runOnUiThread(() -> {
                 pitchTextView.setText(closestNote.getName());
-                speedView.speedTo(Math.round(deltaInCents), MainActivity.NEEDLE_ANIMATION_SPEED);
+                speedView.speedTo(Math.round(deltaInCents), NEEDLE_ANIMATION_SPEED);
             });
         }
     }

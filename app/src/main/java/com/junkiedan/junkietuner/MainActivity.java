@@ -3,57 +3,21 @@ package com.junkiedan.junkietuner;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import android.content.pm.PackageManager;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.widget.TextView;
-
-import com.github.anastr.speedviewlib.SpeedView;
-import com.github.anastr.speedviewlib.components.Section;
-import com.github.anastr.speedviewlib.components.Style;
-import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.junkiedan.junkietuner.core.RecordingRunnable;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.junkiedan.junkietuner.data.entities.Tuning;
+import com.junkiedan.junkietuner.data.viewmodels.TuningViewModel;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
-    private static final int SAMPLING_RATE_IN_HZ = 44100;
-    private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
-    private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
-    /**
-     * Factor by that the minimum buffer size is multiplied. The bigger the factor is the less
-     * likely it is that samples will be dropped, but more memory will be used. The minimum buffer
-     * size is determined by {@link AudioRecord#getMinBufferSize(int, int, int)} and depends on the
-     * recording settings.
-     */
-    private static final int BUFFER_SIZE_FACTOR = 4;
-    /**
-     * Size of the buffer where the audio data is stored by Android
-     */
-    private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLING_RATE_IN_HZ,
-            CHANNEL_CONFIG, AUDIO_FORMAT) * BUFFER_SIZE_FACTOR;
-    /**
-     * Signals whether a recording is in progress (true) or not (false).
-     */
-    private final AtomicBoolean recordingInProgress = new AtomicBoolean(false);
-    private AudioRecord recorder = null;
-    private Thread recordingThread = null;
-    private short[] buffer = null;
-    private TextView pitchTextView = null;
-    private SwitchMaterial tuningSwitch = null;
-    private final static String SWITCH_TURNED_ON_STR = "Tuning";
-    private final static String SWITCH_TURNED_OFF_STR = "Muted";
-    private SpeedView speedView = null;
-    public final static long NEEDLE_ANIMATION_SPEED = 300;
 
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
@@ -76,25 +40,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         setContentView(R.layout.main_app_screen);
 
-        tuningSwitch = findViewById(R.id.tuningSwitch);
-        tuningSwitch.setChecked(false);
-
-        tuningSwitch.setOnClickListener(v -> {
-            if (tuningSwitch.isChecked()) {
-                startRecording();
-            } else {
-                stopRecording();
-            }
-        });
-
-        pitchTextView = findViewById(R.id.textViewPitch);
-        pitchTextView.setText("");
-
-        initSpeedView();
+        initBottomNavBar();
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
     }
@@ -102,89 +50,62 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        tuningSwitch.setChecked(false);
-        stopRecording();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        tuningSwitch.setChecked(false);
-        stopRecording();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (recorder != null) {
-            recorder.release();
-            recorder = null;
-        }
     }
 
-    private void initSpeedView() {
-        speedView = findViewById(R.id.speedView);
-
-        // Speedometer limits
-        speedView.setMinSpeed(-50);
-        speedView.setMaxSpeed(50);
-
-        // Section attributes
-        speedView.clearSections();
-        int speedViewSectionColorId = ContextCompat.getColor(this, R.color.custom_vanilla);
-        Section mainSection = new Section(0f, 1f, speedViewSectionColorId);
-        mainSection.setStyle(Style.ROUND);
-        speedView.addSections(mainSection);
-        speedView.setSpeedometerWidth(8);
-
-        // Marks attributes
-        speedView.setMarksNumber(9);
-        speedView.setMarkStyle(Style.ROUND);
-        speedView.setMarksPadding(5);
-        speedView.setMarkHeight(10);
-
-        // Tick attributes
-        speedView.setTickNumber(11);
-        speedView.setTickPadding(20);
+    private void initBottomNavBar() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener( item -> {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            List<Fragment> allFragments = fragmentManager.getFragments();
+            Class<? extends Fragment> currentFragmentClass =
+                    allFragments.get(allFragments.size() - 1).getClass();
+            if (item.getItemId() == R.id.page_1) {
+                return transitionFragment(fragmentManager, MainFragment.class,
+                        currentFragmentClass, "Main Screen");
+            } else if (item.getItemId() == R.id.page_2) {
+                return transitionFragment(fragmentManager, TuningsFragment.class,
+                        currentFragmentClass, "Tunings Screen");
+            } else if (item.getItemId() == R.id.page_3) {
+                return transitionFragment(fragmentManager, SettingsFragment.class,
+                        currentFragmentClass, "Settings Screen");
+            } else if (item.getItemId() == R.id.page_4) {
+                return transitionFragment(fragmentManager, InfoFragment.class,
+                        currentFragmentClass, "Info Screen");
+            }
+            return false;
+        });
     }
 
-    private void startRecording() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
-            return;
+    private boolean transitionFragment(FragmentManager fragmentManager,
+                                    Class<? extends Fragment> targetFragmentClass,
+                                    Class<? extends Fragment> currentFragmentClass,
+                                    String backStackName) {
+        if (currentFragmentClass == targetFragmentClass) {
+            return false;
         }
-        buffer = new short[BUFFER_SIZE];
-        recorder = new AudioRecord(MediaRecorder.AudioSource.UNPROCESSED,
-                SAMPLING_RATE_IN_HZ,
-                CHANNEL_CONFIG,
-                AUDIO_FORMAT,
-                BUFFER_SIZE);
-        recorder.startRecording();
-        recordingInProgress.set(true);
-        recordingThread = new Thread(
-                new RecordingRunnable(
-                        this,
-                        recordingInProgress,
-                        recorder,
-                        pitchTextView,
-                        speedView,
-                        buffer),
-                "Recording Thread");
-        recordingThread.start();
-        tuningSwitch.setText(SWITCH_TURNED_ON_STR);
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, targetFragmentClass, null)
+                .setReorderingAllowed(true)
+                .addToBackStack(backStackName)
+                .commit();
+        return true;
     }
 
-    private void stopRecording() {
-        if(recorder == null) {
-            return;
-        }
-        recordingInProgress.set(false);
-        recorder.stop();
-        recorder.release();
-        recorder = null;
-        recordingThread = null;
-        pitchTextView.setText("");
-        tuningSwitch.setText(SWITCH_TURNED_OFF_STR);
-        speedView.speedTo(0, NEEDLE_ANIMATION_SPEED);
+    public boolean isPermissionToRecordAccepted() {
+        return permissionToRecordAccepted;
+    }
+
+    public String[] getPermissions() {
+        return permissions;
     }
 }

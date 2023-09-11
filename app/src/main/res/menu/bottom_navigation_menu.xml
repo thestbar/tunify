@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/page_1"
+        android:enabled="true"
+        android:icon="@drawable/guitar_pick_icon"
+        android:title="@string/menuTunerStr"/>
+    <item
+        android:id="@+id/page_2"
+        android:enabled="true"
+        android:icon="@drawable/music_list_icon"
+        android:title="@string/menuTuningsStr"/>
+    <item
+        android:id="@+id/page_3"
+        android:enabled="true"
+        android:icon="@drawable/settings_icon"
+        android:title="@string/menuSettingsStr"/>
+    <item
+        android:id="@+id/page_4"
+        android:enabled="true"
+        android:icon="@drawable/info_simple_icon"
+        android:title="@string/menuInfoStr"/>
+</menu>

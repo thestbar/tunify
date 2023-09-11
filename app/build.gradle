@@ -40,4 +40,15 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation group: 'com.github.wendykierp', name: 'JTransforms', version: '3.1'
     implementation 'com.github.anastr:speedviewlib:1.6.1'
+    // Room dependencies
+    def room_version = "2.5.2"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-rxjava3:$room_version"
+    // optional - Guava support for Room, including Optional and ListenableFuture
+    implementation "androidx.room:room-guava:$room_version"
+    // optional - Test helpers
+    testImplementation "androidx.room:room-testing:$room_version"
+    // optional - Paging 3 Integration
+    implementation "androidx.room:room-paging:$room_version"
 }
