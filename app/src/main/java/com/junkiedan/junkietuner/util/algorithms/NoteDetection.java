@@ -19,8 +19,8 @@ public class NoteDetection {
     private final Note[] allNotes;
     private final static double LOG2_TO_LOG10_CONVERSION_CONST = 1200 * (1 / Math.log10(2));
 
-    public NoteDetection(NotesStructure notesStructure) {
-        this.allNotes = notesStructure.getAllNotes();
+    public NoteDetection() {
+        this.allNotes = NotesStructure.getAllNotes();
     }
 
     /**

@@ -23,32 +23,52 @@ import java.util.List;
  */
 public class TuningViewModel extends AndroidViewModel {
 
-    private TuningRepository tuningRepository;
-    private LiveData<List<Tuning>> allTunings;
+    private static TuningRepository tuningRepository;
+    private static LiveData<List<Tuning>> allTunings;
+    private static TuningViewModel instance = null;
 
-    public TuningViewModel(@NonNull Application application) {
+    private TuningViewModel(@NonNull Application application) {
         super(application);
         tuningRepository = new TuningRepository(application);
         allTunings = tuningRepository.getAllTunings();
     }
 
-    public LiveData<List<Tuning>> getCurrentTunings() {
+    public static LiveData<List<Tuning>> getCurrentTunings(Application application) {
+        if (instance == null) {
+            instance = new TuningViewModel(application);
+        }
         return allTunings;
     }
 
-    public void insert(Tuning tuning) {
+    public static LiveData<Tuning> getTuningById(Application application, int id) {
+        if (instance == null) {
+            instance = new TuningViewModel(application);
+        }
+        return tuningRepository.getTuningById(id);
+    }
+
+    public static void insert(Application application, Tuning tuning) {
+        if (instance == null) {
+            instance = new TuningViewModel(application);
+        }
         tuningRepository.insert(tuning);
     }
 
-    public void update(Tuning tuning) {
+    public static void update(Application application, Tuning tuning) {
+        if (instance == null) {
+            instance = new TuningViewModel(application);
+        }
         tuningRepository.update(tuning);
     }
 
-    public void deleteOne(Tuning tuning) {
+    public static void deleteOne(Tuning tuning) {
         tuningRepository.deleteOne(tuning);
     }
 
-    public void deleteAll() {
+    public static void deleteAll(Application application) {
+        if (instance == null) {
+            instance = new TuningViewModel(application);
+        }
         tuningRepository.deleteAll();
     }
 }

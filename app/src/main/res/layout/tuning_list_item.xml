@@ -1,41 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tuningListItemLinearLayoutBackgroundId"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    >
+    android:paddingBottom="10dp">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tuningName"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
-        <TextView
-            android:id="@+id/tuningName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            />
-        <TextView
-            android:id="@+id/tuningNotes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/custom_linen"
+        app:layout_constraintBottom_toTopOf="@+id/tuningNotes"
+        app:layout_constraintEnd_toStartOf="@+id/deleteButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline20"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tuningNotes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/custom_linen"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/deleteButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/guideline20"
+        app:layout_constraintTop_toBottomOf="@+id/tuningName" />
 
     <ImageButton
         android:id="@+id/deleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/delete_icon"
-        android:scaleX="1"
-        android:scaleY="1"
         android:background="@drawable/custom_selector_transparent_off_light_on"
         android:contentDescription="@string/delete_item_button"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:src="@drawable/delete_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline21"
+        app:layout_constraintTop_toTopOf="parent"
         app:tint="@drawable/custom_selector_color_dark" />
-</LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+</androidx.constraintlayout.widget.ConstraintLayout>

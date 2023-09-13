@@ -10,14 +10,15 @@ import java.util.Objects;
  */
 public class NotesStructure {
 
-    private Note[] allNotes;
-    private final String[] notesAnno = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    private static Note[] allNotes;
+    private static String[] stringNoteNames;
+    private static final String[] notesAnno = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
-    public NotesStructure() {
-        initNotes();
+    private NotesStructure() {
+
     }
 
-    private void initNotes() {
+    private static void initNotes() {
         double concertPitch = 440.0;
         // 12 notes per octave * 8 included octaves for the tuner
         int allNotesLen = 12 * 8;
@@ -38,16 +39,19 @@ public class NotesStructure {
             double bck = concertPitch * Math.pow(2, -i / 12.0);
             int bckIdx = allNotesLen / 2 - i;
             int bckNoteIdx = (bckIdx + 9) % 12;
-            if (bckNoteIdx == 0) --currOctBck;
+            if (bckNoteIdx == 11) --currOctBck;
             allNotes[bckIdx] = new Note(notesAnno[bckNoteIdx] + currOctBck, bck);
         }
     }
 
-    public Note[] getAllNotes() {
+    public static Note[] getAllNotes() {
+        if (allNotes == null) {
+            initNotes();
+        }
         return allNotes;
     }
 
-    private void printNotes() {
+    private static void printNotes() {
         for (Note note : allNotes) {
             System.out.println(note);
         }
@@ -58,7 +62,10 @@ public class NotesStructure {
      * @param noteName 0
      * @return 0
      */
-    public Note searchNote(String noteName) {
+    public static Note searchNote(String noteName) {
+        if (allNotes == null) {
+            initNotes();
+        }
         for (Note note : allNotes) {
             if (Objects.equals(note.getName(), noteName)) {
                 return note;
@@ -67,4 +74,31 @@ public class NotesStructure {
         return null;
     }
 
+    public static int searchNoteIndex(String noteName) {
+        if (allNotes == null) {
+            initNotes();
+        }
+        for (int i = 0; i < allNotes.length; ++i) {
+            Note note = allNotes[i];
+            if (Objects.equals(note.getName(), noteName)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+    public static String[] getNotesAsStringArray() {
+        if (allNotes == null) {
+            initNotes();
+        }
+        if (stringNoteNames == null) {
+            stringNoteNames = new String[allNotes.length];
+            int i = 0;
+            for (Note note : allNotes) {
+                stringNoteNames[i++] = note.getName();
+            }
+        }
+        return stringNoteNames;
+    }
 }

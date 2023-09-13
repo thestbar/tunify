@@ -20,7 +20,6 @@ public class RecordingRunnable extends Thread {
     private final short[] inputBuffer;
     private final Yin yinInstance;
     private final NoteDetection noteDetection;
-    private final NotesStructure notesStructure;
     private final TextView pitchTextView;
     private final Activity mainActivity;
     private final SpeedView speedView;
@@ -33,8 +32,7 @@ public class RecordingRunnable extends Thread {
         this.recorder = recorder;
         this.inputBuffer = inputBuffer;
         yinInstance = Yin.getInstance(recorder.getSampleRate());
-        notesStructure = new NotesStructure();
-        noteDetection = new NoteDetection(notesStructure);
+        noteDetection = new NoteDetection();
         this.pitchTextView = pitchTextView;
         this.mainActivity = mainActivity;
         this.speedView = speedView;

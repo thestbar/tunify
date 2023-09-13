@@ -1,26 +1,40 @@
 package com.junkiedan.junkietuner;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
+
+import android.app.Application;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
 import com.junkiedan.junkietuner.core.TuningAdapter;
-import com.junkiedan.junkietuner.data.TuningHandler;
 import com.junkiedan.junkietuner.data.entities.Tuning;
 import com.junkiedan.junkietuner.data.viewmodels.TuningViewModel;
+import com.junkiedan.junkietuner.util.notes.NotesStructure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,8 +42,6 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class TuningsFragment extends Fragment {
-
-    private TuningViewModel tuningViewModel;
 
     private RecyclerView recyclerView;
     private FloatingActionButton addTuningButton;
@@ -63,11 +75,11 @@ public class TuningsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        tuningViewModel = new TuningViewModel(((MainActivity) requireActivity()).getApplication());
+        Application application = ((MainActivity) requireActivity()).getApplication();
 
         recyclerView = requireView().findViewById(R.id.tuningsList);
-        TuningAdapter tuningAdapter = new TuningAdapter(new ArrayList<>(), tuningViewModel);
+        TuningAdapter tuningAdapter = new TuningAdapter(new ArrayList<>(),
+                getChildFragmentManager());
         recyclerView.setAdapter(tuningAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
@@ -75,11 +87,12 @@ public class TuningsFragment extends Fragment {
             tuningAdapter.setTuningList(tunings);
             recyclerView.setAdapter(tuningAdapter);
         };
-        tuningViewModel.getCurrentTunings().observe(getViewLifecycleOwner(), tuningListObserver);
+        TuningViewModel.getCurrentTunings(application)
+                .observe(getViewLifecycleOwner(), tuningListObserver);
         addTuningButton = requireView().findViewById(R.id.addTuningButton);
         addTuningButton.setOnClickListener(v -> {
-            // Test write to DB
-            tuningViewModel.insert(new Tuning("Standard E", "[E2,A2,D3,G3,B3,E4]"));
+            new AddTuningDialogFragment()
+                    .show(getChildFragmentManager(), "AddTuningDialogFragment");
         });
     }
 }

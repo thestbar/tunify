@@ -11,14 +11,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.07" />
+        app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline17"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05"/>
+        app:layout_constraintGuide_percent="0.05352798" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline18"
@@ -51,6 +51,7 @@
         android:gravity="center_vertical"
         android:text="@string/tuningsFragmentTitleStr"
         android:textSize="26sp"
+        android:textColor="@color/custom_linen"
         app:layout_constraintBottom_toTopOf="@+id/guideline16"
         app:layout_constraintStart_toStartOf="@+id/guideline17"
         app:layout_constraintTop_toTopOf="parent" />
@@ -60,8 +61,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline18"
-        app:layout_constraintStart_toStartOf="@+id/guideline17"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline16" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

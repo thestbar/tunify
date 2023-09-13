@@ -5,17 +5,23 @@
     android:layout_height="match_parent"
     android:background="@color/custom_raisin_black">
 
-    <ImageView
+    <TextView
         android:id="@+id/logoImageView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/logoImgViewAltStr"
-        android:rotation="2"
-        android:scaleType="fitXY"
+        android:layout_height="0dp"
+        android:text="@string/junkietuner"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textColor="@color/custom_linen"
+        android:shadowColor="@color/custom_persian_red"
+        android:shadowDx="1.5"
+        android:shadowDy="1.3"
+        android:shadowRadius="1.6"
+
+        android:outlineProvider="bounds"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/junkie_tuner_logo" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/guitarImageView"

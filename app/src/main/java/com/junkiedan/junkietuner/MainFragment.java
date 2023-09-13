@@ -11,7 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +24,25 @@ import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.Section;
 import com.github.anastr.speedviewlib.components.Style;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.junkiedan.junkietuner.core.PreferencesDataStoreHandler;
 import com.junkiedan.junkietuner.core.RecordingRunnable;
+import com.junkiedan.junkietuner.data.TuningHandler;
 import com.junkiedan.junkietuner.data.entities.Tuning;
 import com.junkiedan.junkietuner.data.viewmodels.TuningViewModel;
+import com.junkiedan.junkietuner.util.notes.GuitarTuning;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.functions.Consumer;
+import kotlinx.coroutines.flow.Flow;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,6 +85,8 @@ public class MainFragment extends Fragment {
     private boolean permissionToRecordAccepted;
     private String[] permissions;
 
+    private List<TextView> notesTextViewList;
+
     public MainFragment() {
         // Required empty public constructor
     }
@@ -80,8 +97,7 @@ public class MainFragment extends Fragment {
      *
      * @return A new instance of fragment MainFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static MainFragment newInstance(String param1, String param2) {
+    public static MainFragment newInstance() {
         return new MainFragment();
     }
 
@@ -105,6 +121,10 @@ public class MainFragment extends Fragment {
         initTuningSwitch();
         initPitchTextView();
         initSpeedView();
+        // First get references to the notes text views of the main fragment
+        initNotesTextViewList();
+        // Then initialize the string values
+        initSelectedTuning();
     }
 
     @Override
@@ -176,6 +196,46 @@ public class MainFragment extends Fragment {
         // Tick attributes
         speedView.setTickNumber(11);
         speedView.setTickPadding(20);
+    }
+
+    private void initSelectedTuning() {
+        // Retrieve current tuning id from preferences
+        Flowable<Integer> currentTuningIdFlowable = PreferencesDataStoreHandler
+                .getCurrentTuningId(requireContext());
+        // Extract tuning id value
+        int currentTuningId = currentTuningIdFlowable.blockingFirst();
+        // Check if tuning exists in database
+        LiveData<Tuning> currentTuning =
+                TuningViewModel.getTuningById(requireActivity().getApplication(), currentTuningId);
+        final Observer<Tuning> observer = tuning -> {
+            Log.println(Log.DEBUG, "Current Tuning",
+                    tuning == null ? "null" : tuning.toString());
+            // In case tuning is null, this means that the selected tuning
+            // does not exist in the database anymore. Therefore, it will
+            // be initialized to Standard E tuning
+            if (tuning == null) {
+                tuning = new Tuning("Standard E", "[E2,A2,D3,G3,B3,E4]");
+            }
+            // Extract guitar tuning from tuning
+            GuitarTuning guitarTuning = TuningHandler.getGuitarTuningFromTuning(tuning);
+            // Set notes on text views
+            int i, len = notesTextViewList.size();
+            for (i = 0; i < len; ++i) {
+                notesTextViewList.get(i)
+                        .setText(guitarTuning.getNotes()[i].getName());
+            }
+        };
+        currentTuning.observe(getViewLifecycleOwner(), observer);
+    }
+
+    private void initNotesTextViewList() {
+        notesTextViewList = new ArrayList<>();
+        notesTextViewList.add(requireView().findViewById(R.id.textViewNote1));
+        notesTextViewList.add(requireView().findViewById(R.id.textViewNote2));
+        notesTextViewList.add(requireView().findViewById(R.id.textViewNote3));
+        notesTextViewList.add(requireView().findViewById(R.id.textViewNote4));
+        notesTextViewList.add(requireView().findViewById(R.id.textViewNote5));
+        notesTextViewList.add(requireView().findViewById(R.id.textViewNote6));
     }
 
     private void startRecording() {

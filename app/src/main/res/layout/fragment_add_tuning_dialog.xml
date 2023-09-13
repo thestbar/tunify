@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="300dp"
+    android:background="@color/custom_raisin_black"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp"
+    tools:context=".AddTuningDialogFragment">
+
+    <TextView
+        android:id="@+id/newTuningNotesLabelId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="26sp"
+        android:paddingBottom="10dp"
+        android:text="@string/add_tuning_dialog_title"/>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/newTuningNameInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/new_tuning_name"
+        android:gravity="start"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newTuningNotesLabelId" />
+
+    <TextView
+        android:id="@+id/newTuningNotesLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/new_tuning_selected_notes_label"
+        android:textSize="20sp"
+        android:paddingTop="20dp"
+        android:paddingBottom="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newTuningNameInput" />
+
+    <Spinner
+        android:id="@+id/spinnerNote1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/spinnerNotes"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newTuningNotesLabel" />
+
+    <Spinner
+        android:id="@+id/spinnerNote2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/spinnerNotes"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerNote1" />
+
+    <Spinner
+        android:id="@+id/spinnerNote3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/spinnerNotes"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerNote2" />
+
+    <Spinner
+        android:id="@+id/spinnerNote4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/spinnerNotes"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerNote3" />
+
+    <Spinner
+        android:id="@+id/spinnerNote5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/spinnerNotes"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerNote4" />
+
+    <Spinner
+        android:id="@+id/spinnerNote6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:entries="@array/spinnerNotes"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerNote5" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addTuningOkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ok_button"
+        android:backgroundTint="@color/custom_linen"
+        android:textColor="@color/custom_raisin_black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerNote6"
+        android:layout_marginTop="15dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addTuningCancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/custom_persian_red"
+        android:textColor="@color/custom_linen"
+        android:text="@string/cancel_button"
+        app:layout_constraintEnd_toStartOf="@+id/addTuningOkButton"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerNote6"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

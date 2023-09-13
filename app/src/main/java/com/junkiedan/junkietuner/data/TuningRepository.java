@@ -21,7 +21,11 @@ public class TuningRepository {
     }
 
     public LiveData<List<Tuning>> getAllTunings() {
-        return allTunings;
+        return tuningDao.getAllTunings();
+    }
+
+    public LiveData<Tuning> getTuningById(int id) {
+        return tuningDao.getTuningById(id);
     }
 
     public void insert(Tuning tuning) {

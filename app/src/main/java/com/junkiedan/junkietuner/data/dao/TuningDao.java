@@ -17,6 +17,9 @@ public interface TuningDao {
     @Query("SELECT * FROM Tuning")
     LiveData<List<Tuning>> getAllTunings();
 
+    @Query("SELECT * FROM Tuning WHERE id=:id")
+    LiveData<Tuning> getTuningById(int id);
+
     @Update
     void update(Tuning tuning);
 
