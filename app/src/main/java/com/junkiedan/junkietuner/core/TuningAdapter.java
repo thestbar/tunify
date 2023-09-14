@@ -93,8 +93,15 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        selectedItemId = PreferencesDataStoreHandler.getCurrentTuningId(context)
-                .blockingFirst();
+        try {
+            selectedItemId = PreferencesDataStoreHandler.getCurrentTuningId(context)
+                    .blockingFirst();
+        } catch (NullPointerException e) {
+            Log.println(Log.WARN, "TuningAdapter@onCreateViewHolder", "When " +
+                    "trying to retrieve getCurrentTuningId(context).blockingFirst() a " +
+                    "NullPointerException was fired because the value has not been " +
+                    "initialized in PreferencesDataStore.");
+        }
         LayoutInflater inflater = LayoutInflater.from(context);
         // Initialize vibrator
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -140,8 +147,16 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
             vibrator.vibrate(60);
             Log.println(Log.DEBUG, "textViewName.getRootView().setOnClickListener",
                     "Value: " + tuning + " has been selected as default Tuning");
-            Objects.requireNonNull(viewHolderMap.get(selectedItemId))
-                    .unselect();
+            try {
+                Objects.requireNonNull(viewHolderMap.get(selectedItemId))
+                        .unselect();
+            } catch (NullPointerException e) {
+                Log.println(Log.WARN, "TuningAdapter@onBindBiewHolder@setOnClickListener@" +
+                        "holder.nameTextView.getRootView()", "NullPointerException was " +
+                        "fired when trying to unselect current item, because there is no " +
+                        "previously selected item (selectedItemId == -1)");
+
+            }
             selectedItemId = tuning.id;
             notifyItemChanged(holder.getAdapterPosition());
             holder.select();

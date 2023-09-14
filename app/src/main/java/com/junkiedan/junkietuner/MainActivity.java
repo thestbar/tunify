@@ -10,16 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.junkiedan.junkietuner.core.PreferencesDataStoreHandler;
 
 import org.jetbrains.annotations.NotNull;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.util.List;
-import java.util.Random;
-
-import io.reactivex.rxjava3.core.Flowable;
 
 
 public class MainActivity extends AppCompatActivity {

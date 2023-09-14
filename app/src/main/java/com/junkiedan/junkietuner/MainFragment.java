@@ -202,14 +202,26 @@ public class MainFragment extends Fragment {
         // Retrieve current tuning id from preferences
         Flowable<Integer> currentTuningIdFlowable = PreferencesDataStoreHandler
                 .getCurrentTuningId(requireContext());
+        // In case no initiation has been provided then
+        // the flowable will be null and the program
+        // has to take care of it
         // Extract tuning id value
-        int currentTuningId = currentTuningIdFlowable.blockingFirst();
+        int currentTuningId;
+        try {
+            currentTuningId = currentTuningIdFlowable.blockingFirst();
+        } catch (NullPointerException e) {
+            Log.println(Log.WARN, "MainFragment@initSelectedTuning", "When " +
+                    "trying to retrieve currentTuningIdFlowable.blockingFirst() a " +
+                    "NullPointerException was fired because the value has not been " +
+                    "initialized in PreferencesDataStore. The value has been set to -1");
+            currentTuningId = -1;
+        }
         // Check if tuning exists in database
         LiveData<Tuning> currentTuning =
                 TuningViewModel.getTuningById(requireActivity().getApplication(), currentTuningId);
         final Observer<Tuning> observer = tuning -> {
-            Log.println(Log.DEBUG, "Current Tuning",
-                    tuning == null ? "null" : tuning.toString());
+//            Log.println(Log.DEBUG, "Current Tuning",
+//                    tuning == null ? "null" : tuning.toString());
             // In case tuning is null, this means that the selected tuning
             // does not exist in the database anymore. Therefore, it will
             // be initialized to Standard E tuning

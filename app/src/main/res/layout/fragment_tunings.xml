@@ -70,7 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/add_tuning_button"
-        android:src="@drawable/add_plus_icon"
+        android:src="@drawable/plus_big_icon"
         android:tint="@drawable/custom_selector_color_dark_inverted"
         app:backgroundTint="@drawable/custom_selector_color_dark"
         android:elevation="6dp"
