@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.junkiedan.junkietuner.data.TuningHandler;
+import com.junkiedan.junkietuner.util.notes.GuitarTuning;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_app_screen);
 
         initBottomNavBar();
+
+        // Initialize the Database
+        // TODO - Only if it is the first time that the application opens
+        // TODO - There is a bug with the Tunings Fragment when the database is preloaded
+        TuningHandler.resetDatabaseValuesToDefault(getApplication());
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
     }
