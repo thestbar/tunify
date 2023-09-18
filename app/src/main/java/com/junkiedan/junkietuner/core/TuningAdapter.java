@@ -3,6 +3,7 @@ package com.junkiedan.junkietuner.core;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Debug;
 import android.os.Vibrator;
 import android.preference.Preference;
 import android.util.ArrayMap;
@@ -88,8 +89,6 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
     }
 
     public void setTuningList(List<Tuning> tuningList) {
-        System.out.println(selectedItemId);
-        System.out.println(tuningList);
         this.tuningList = tuningList;
     }
 
@@ -112,23 +111,21 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Get the data model based on position
-        Tuning tuning = tuningList.get(holder.getAdapterPosition());
+        Tuning tuning = tuningList.get(holder.getLayoutPosition());
         // Add holder inside viewHolderMap
         viewHolderMap.put(tuning.id, holder);
         if (selectedItemId == tuning.id) {
             holder.select();
+        } else {
+            holder.unselect();
         }
         // Set item views based on your views and data model
         holder.nameTextView.setText(tuning.name);
         holder.notesTextView.setText(tuning.notesFormatted());
         holder.deleteButton.setOnClickListener(v -> {
-            System.out.println(tuning);
+            Log.println(Log.DEBUG, "Deleting Tuning From DB", String.valueOf(tuning));
             TuningViewModel.deleteOne(tuning);
         });
-        // If it is the selected view then mark it as selected
-        if (selectedItemId == tuning.id) {
-            holder.select();
-        }
         // Set when user long clicks on the whole parent element
         // of the text view to open the edit dialog
         holder.nameTextView.getRootView().setOnLongClickListener(v -> {
@@ -151,11 +148,10 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
                 Log.println(Log.WARN, "TuningAdapter@onBindBiewHolder@setOnClickListener@" +
                         "holder.nameTextView.getRootView()", "NullPointerException was " +
                         "fired when trying to unselect current item, because there is no " +
-                        "previously selected item (selectedItemId == -1)");
-
+                        "previously selected item id = `" + selectedItemId + "`");
             }
             selectedItemId = tuning.id;
-            notifyItemChanged(holder.getAdapterPosition());
+            notifyItemChanged(holder.getLayoutPosition());
             holder.select();
             PreferencesDataStoreHandler.setCurrentTuningId(context, tuning.id);
         });

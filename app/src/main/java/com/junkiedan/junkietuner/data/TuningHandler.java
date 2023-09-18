@@ -91,9 +91,10 @@ public class TuningHandler {
         TuningViewModel.insert(application, tuning);
         // Open Gm ('Banjo Minor')
         tuning = new Tuning("Open Gm ('Banjo Minor')", "[D2,G2,D3,G3,A#3,D4]");
+        TuningViewModel.insert(application, tuning);
         // Open Gsus ('Sawmill')
         tuning = new Tuning("Open Gsus ('Sawmill')", "[D2,G2,D3,G3,C4,D4]");
-        TuningViewModel.insert(application, tuning);TuningViewModel.insert(application, tuning);
+        TuningViewModel.insert(application, tuning);
         // Open C ('Wide Major')
         tuning = new Tuning("Open C ('Wide Major')", "[C2,G2,C3,G3,C4,E4]");
         TuningViewModel.insert(application, tuning);

@@ -49,23 +49,9 @@ public class MainActivity extends AppCompatActivity {
         initBottomNavBar();
 
         // Initialize the Database
-        // TODO - There is a bug with the Tunings Fragment when the database is preloaded
         // TODO - Add search in the tunings list
 
-        // Reset DB only if it is the first time that the application opens
-        try {
-            boolean dbHasBeenInitialized = PreferencesDataStoreHandler
-                    .hasBeenInitialized(getApplicationContext())
-                    .blockingFirst();
-            if (!dbHasBeenInitialized) {
-                TuningHandler.resetDatabaseValuesToDefault(getApplication());
-            }
-        } catch (NullPointerException e) {
-            Log.println(Log.WARN, "MainActivity@onCreate", "NullPointerException " +
-                    "fired when trying to retrieve hasBeenInitialized value from prefs");
-            TuningHandler.resetDatabaseValuesToDefault(getApplication());
-            PreferencesDataStoreHandler.setHasBeenInitialized(getApplicationContext(), true);
-        }
+        initDatabase();
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
     }
@@ -107,6 +93,23 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    private void initDatabase() {
+        // Reset DB only if it is the first time that the application opens
+        try {
+            boolean dbHasBeenInitialized = PreferencesDataStoreHandler
+                    .hasBeenInitialized(getApplicationContext())
+                    .blockingFirst();
+            if (!dbHasBeenInitialized) {
+                TuningHandler.resetDatabaseValuesToDefault(getApplication());
+            }
+        } catch (NullPointerException e) {
+            Log.println(Log.WARN, "MainActivity@onCreate", "NullPointerException " +
+                    "fired when trying to retrieve hasBeenInitialized value from prefs");
+            TuningHandler.resetDatabaseValuesToDefault(getApplication());
+            PreferencesDataStoreHandler.setHasBeenInitialized(getApplicationContext(), true);
+        }
     }
 
     private boolean transitionFragment(FragmentManager fragmentManager,
