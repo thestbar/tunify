@@ -76,32 +76,29 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
     private Vibrator vibrator;
     private Context context;
 
-    private int selectedItemId = -1;
-    private static final Map<Integer, ViewHolder> viewHolderMap = new ArrayMap<>();
+    private int selectedItemId;
+    private static final Map<Integer, ViewHolder> viewHolderMap = new HashMap<>();
 
     // Pass in the contact array into the constructor
-    public TuningAdapter(List<Tuning> tuningList, FragmentManager fragmentManager) {
+    public TuningAdapter(List<Tuning> tuningList, FragmentManager fragmentManager,
+                         int selectedItemId) {
         this.tuningList = tuningList;
         this.fragmentManager = fragmentManager;
+        this.selectedItemId = selectedItemId;
     }
 
     public void setTuningList(List<Tuning> tuningList) {
+        System.out.println(selectedItemId);
+        System.out.println(tuningList);
         this.tuningList = tuningList;
     }
+
     // Usually involves inflating a layout from XML and returning the holder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        try {
-            selectedItemId = PreferencesDataStoreHandler.getCurrentTuningId(context)
-                    .blockingFirst();
-        } catch (NullPointerException e) {
-            Log.println(Log.WARN, "TuningAdapter@onCreateViewHolder", "When " +
-                    "trying to retrieve getCurrentTuningId(context).blockingFirst() a " +
-                    "NullPointerException was fired because the value has not been " +
-                    "initialized in PreferencesDataStore.");
-        }
+
         LayoutInflater inflater = LayoutInflater.from(context);
         // Initialize vibrator
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -115,7 +112,7 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Get the data model based on position
-        Tuning tuning = tuningList.get(position);
+        Tuning tuning = tuningList.get(holder.getAdapterPosition());
         // Add holder inside viewHolderMap
         viewHolderMap.put(tuning.id, holder);
         if (selectedItemId == tuning.id) {

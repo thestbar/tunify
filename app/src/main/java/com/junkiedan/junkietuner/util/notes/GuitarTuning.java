@@ -1,5 +1,8 @@
 package com.junkiedan.junkietuner.util.notes;
 
+import android.os.Debug;
+import android.util.Log;
+
 import java.io.Serializable;
 
 public class GuitarTuning implements Serializable {
@@ -13,7 +16,12 @@ public class GuitarTuning implements Serializable {
         int i = 0;
         for (String noteName : noteNames) {
             Note note = NotesStructure.searchNote(noteName);
-            assert note != null : "Search for invalid note.";
+            if (note == null) {
+                Log.println(Log.ERROR, "GuitarTuning@Constructor",
+                        "Search for invalid note - noteName: `" + noteName +
+                                "` - Select A0 instead of this note");
+                note = NotesStructure.searchNote("A0");
+            }
             notes[i++] = note;
         }
     }

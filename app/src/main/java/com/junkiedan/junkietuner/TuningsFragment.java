@@ -26,6 +26,7 @@ import android.widget.Spinner;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
+import com.junkiedan.junkietuner.core.PreferencesDataStoreHandler;
 import com.junkiedan.junkietuner.core.TuningAdapter;
 import com.junkiedan.junkietuner.data.entities.Tuning;
 import com.junkiedan.junkietuner.data.viewmodels.TuningViewModel;
@@ -75,11 +76,23 @@ public class TuningsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Application application = ((MainActivity) requireActivity()).getApplication();
+        Application application = requireActivity().getApplication();
 
         recyclerView = requireView().findViewById(R.id.tuningsList);
+
+        int initSelectedItemId = -1;
+        try {
+            initSelectedItemId = PreferencesDataStoreHandler.getCurrentTuningId(requireContext())
+                    .blockingFirst();
+        } catch (NullPointerException e) {
+            Log.println(Log.WARN, "TuningsFragment@onViewCreated", "When " +
+                    "trying to retrieve getCurrentTuningId(context).blockingFirst() a " +
+                    "NullPointerException was fired because the value has not been " +
+                    "initialized in PreferencesDataStore.");
+        }
+
         TuningAdapter tuningAdapter = new TuningAdapter(new ArrayList<>(),
-                getChildFragmentManager());
+                getChildFragmentManager(), initSelectedItemId);
         recyclerView.setAdapter(tuningAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 

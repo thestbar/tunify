@@ -43,16 +43,16 @@ public class TuningHandler {
         Tuning tuning = new Tuning("Standard E", "[E2,A2,D3,G3,B3,E4]");
         TuningViewModel.insert(application, tuning);
         // Standard Eb
-        tuning = new Tuning("Standard Eb/D#", "[D#2,G#2,C#3,F#3,A#3,D#4");
+        tuning = new Tuning("Standard Eb/D#", "[D#2,G#2,C#3,F#3,A#3,D#4]");
         TuningViewModel.insert(application, tuning);
         // Standard D
         tuning = new Tuning("Standard D", "[D2,G2,C3,F3,A3,D4]");
         TuningViewModel.insert(application, tuning);
         // Standard Db
-        tuning = new Tuning("Standard Db/C#", "[C#2,F#2,B3,E3,G#3,C#4");
+        tuning = new Tuning("Standard Db/C#", "[C#2,F#2,B3,E3,G#3,C#4]");
         TuningViewModel.insert(application, tuning);
         // Standard C
-        tuning = new Tuning("Standard C", "[C2,F2,A#3,D#3,G3,C4");
+        tuning = new Tuning("Standard C", "[C2,F2,A#3,D#3,G3,C4]");
         TuningViewModel.insert(application, tuning);
         // Standard F
         tuning = new Tuning("Standard F", "[F2,A#2,D#3,G#3,C3,F4]");

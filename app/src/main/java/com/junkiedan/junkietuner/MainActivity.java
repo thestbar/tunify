@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.junkiedan.junkietuner.core.PreferencesDataStoreHandler;
 import com.junkiedan.junkietuner.data.TuningHandler;
 import com.junkiedan.junkietuner.util.notes.GuitarTuning;
 
@@ -48,9 +49,23 @@ public class MainActivity extends AppCompatActivity {
         initBottomNavBar();
 
         // Initialize the Database
-        // TODO - Only if it is the first time that the application opens
         // TODO - There is a bug with the Tunings Fragment when the database is preloaded
-        TuningHandler.resetDatabaseValuesToDefault(getApplication());
+        // TODO - Add search in the tunings list
+
+        // Reset DB only if it is the first time that the application opens
+        try {
+            boolean dbHasBeenInitialized = PreferencesDataStoreHandler
+                    .hasBeenInitialized(getApplicationContext())
+                    .blockingFirst();
+            if (!dbHasBeenInitialized) {
+                TuningHandler.resetDatabaseValuesToDefault(getApplication());
+            }
+        } catch (NullPointerException e) {
+            Log.println(Log.WARN, "MainActivity@onCreate", "NullPointerException " +
+                    "fired when trying to retrieve hasBeenInitialized value from prefs");
+            TuningHandler.resetDatabaseValuesToDefault(getApplication());
+            PreferencesDataStoreHandler.setHasBeenInitialized(getApplicationContext(), true);
+        }
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
     }
