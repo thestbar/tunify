@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">JunkieTuner</string>
+    <string name="app_name">Tunify</string>
     <string name="_freqLabel">0</string>
     <string name="pitch_value">G#4</string>
     <string name="strPitchValue">E2</string>
@@ -37,7 +37,7 @@
     <string name="ok_button">OK</string>
     <string name="new_tuning_name">Tuning Name</string>
     <string name="new_tuning_selected_notes_label">Select Notes</string>
-    <string name="junkietuner">JunkieTuner</string>
+    <string name="junkietuner">Tunify</string>
     <string name="settingsFragmentTitleStr">Settings</string>
     <string name="infoFragmentTitleStr">Info</string>
     <string name="lock_tuner">Lock Tuner</string>
