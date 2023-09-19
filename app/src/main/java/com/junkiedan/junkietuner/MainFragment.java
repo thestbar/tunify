@@ -29,20 +29,17 @@ import com.junkiedan.junkietuner.core.RecordingRunnable;
 import com.junkiedan.junkietuner.data.TuningHandler;
 import com.junkiedan.junkietuner.data.entities.Tuning;
 import com.junkiedan.junkietuner.data.viewmodels.TuningViewModel;
+import com.junkiedan.junkietuner.util.algorithms.NoteDetection;
 import com.junkiedan.junkietuner.util.notes.GuitarTuning;
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
+import com.junkiedan.junkietuner.util.notes.Note;
+import com.junkiedan.junkietuner.util.notes.NotesStructure;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Scheduler;
-import io.reactivex.rxjava3.functions.Consumer;
-import kotlinx.coroutines.flow.Flow;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -118,30 +115,48 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initTuningSwitch();
         initPitchTextView();
         initSpeedView();
         // First get references to the notes text views of the main fragment
         initNotesTextViewList();
         // Then initialize the string values
         initSelectedTuning();
+        // Tuning switch starts the recording (if it is selected to start automatically
+        // that's why it is initialized last
+        // Also it uses the references to the notes text views if needed!
+        initTuningSwitch();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        stopRecording();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (tuningSwitch != null) {
-            tuningSwitch.setChecked(false);
+        // If IS_LOAD_LAST_MUTED_STATE is true and IS_TUNING
+        // is true then we should start recording
+        try {
+            boolean isLoadLastMutedState = PreferencesDataStoreHandler
+                    .getIsLoadLastMutedState(requireContext())
+                    .blockingFirst();
+            boolean isTuning = PreferencesDataStoreHandler
+                    .getIsTuning(requireContext())
+                    .blockingFirst();
+            if (isLoadLastMutedState && isTuning) {
+                startRecording();
+            }
+        } catch (NullPointerException e) {
+            Log.println(Log.WARN, "MainFragment@onViewCreated",
+                    "IS_LOAD_LAST_MUTED_STATE or IS_TUNING not initialized");
         }
-        stopRecording();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (tuningSwitch != null) {
-            tuningSwitch.setChecked(false);
-        }
         stopRecording();
     }
 
@@ -156,9 +171,22 @@ public class MainFragment extends Fragment {
 
     private void initTuningSwitch() {
         tuningSwitch = requireView().findViewById(R.id.tuningSwitch);
-        tuningSwitch.setChecked(false);
+        try {
+            boolean isLoadLastMutedState = PreferencesDataStoreHandler
+                    .getIsLoadLastMutedState(requireContext())
+                    .blockingFirst();
+            boolean isTuning = PreferencesDataStoreHandler
+                    .getIsTuning(requireContext())
+                    .blockingFirst();
+            setSwitchChecked(isLoadLastMutedState && isTuning);
+        } catch (NullPointerException e) {
+            setSwitchChecked(false);
+            PreferencesDataStoreHandler.setIsLoadLastMutedState(requireContext(), true);
+            PreferencesDataStoreHandler.setIsTuning(requireContext(), false);
+        }
 
         tuningSwitch.setOnClickListener(v -> {
+            PreferencesDataStoreHandler.setIsTuning(requireContext(), tuningSwitch.isChecked());
             if (tuningSwitch.isChecked()) {
                 startRecording();
             } else {
@@ -220,8 +248,6 @@ public class MainFragment extends Fragment {
         LiveData<Tuning> currentTuning =
                 TuningViewModel.getTuningById(requireActivity().getApplication(), currentTuningId);
         final Observer<Tuning> observer = tuning -> {
-//            Log.println(Log.DEBUG, "Current Tuning",
-//                    tuning == null ? "null" : tuning.toString());
             // In case tuning is null, this means that the selected tuning
             // does not exist in the database anymore. Therefore, it will
             // be initialized to Standard E tuning
@@ -235,6 +261,24 @@ public class MainFragment extends Fragment {
             for (i = 0; i < len; ++i) {
                 notesTextViewList.get(i)
                         .setText(guitarTuning.getNotes()[i].getName());
+            }
+            // If tuning is locked then create a new NoteDetection and
+            // pass it to the RecordingRunnable (if it exists)
+            boolean isTunerLocked = false;
+            try {
+                isTunerLocked = PreferencesDataStoreHandler
+                        .getIsTunerLocked(getContext())
+                        .blockingFirst();
+            } catch (NullPointerException e) {
+                Log.println(Log.ERROR, "MainFragment@startRecording",
+                        "PreferencesDataStoreHandler.getIsTunerLocked returned no value. " +
+                                "Default value will be set to `false`");
+            }
+            if (isTunerLocked) {
+                // Extract notes from tuning
+                Note[] tuningNotes = guitarTuning.getNotes();
+                NoteDetection newNoteDetection = new NoteDetection(tuningNotes);
+                RecordingRunnable.setNoteDetection(newNoteDetection);
             }
         };
         currentTuning.observe(getViewLifecycleOwner(), observer);
@@ -288,5 +332,10 @@ public class MainFragment extends Fragment {
         pitchTextView.setText("");
         tuningSwitch.setText(SWITCH_TURNED_OFF_STR);
         speedView.speedTo(0, NEEDLE_ANIMATION_SPEED);
+    }
+
+    private void setSwitchChecked(boolean value) {
+        tuningSwitch.setChecked(value);
+        PreferencesDataStoreHandler.setIsTuning(requireContext(), value);
     }
 }

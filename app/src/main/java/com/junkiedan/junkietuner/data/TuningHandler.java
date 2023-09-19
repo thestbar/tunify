@@ -117,7 +117,7 @@ public class TuningHandler {
         tuning = new Tuning("Open Fm ('Low Banjo')", "[C2,F2,C3,F3,A3,C4]");
         TuningViewModel.insert(application, tuning);
         // Open A ('Spanish')
-        tuning = new Tuning("Open A ('Spanish')", "[E2,A2,E3,A3,C#4,E4");
+        tuning = new Tuning("Open A ('Spanish')", "[E2,A2,E3,A3,C#4,E4]");
         TuningViewModel.insert(application, tuning);
         // Interval Tunings
         // All Minor 3rds ('Diminished')

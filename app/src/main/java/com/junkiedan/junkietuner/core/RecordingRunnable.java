@@ -7,6 +7,7 @@ import android.media.AudioRecord;
 import android.widget.TextView;
 
 import com.github.anastr.speedviewlib.SpeedView;
+import com.junkiedan.junkietuner.data.TuningHandler;
 import com.junkiedan.junkietuner.util.algorithms.NoteDetection;
 import com.junkiedan.junkietuner.util.algorithms.Yin;
 import com.junkiedan.junkietuner.util.notes.Note;
@@ -19,7 +20,7 @@ public class RecordingRunnable extends Thread {
     private final AudioRecord recorder;
     private final short[] inputBuffer;
     private final Yin yinInstance;
-    private final NoteDetection noteDetection;
+    private static NoteDetection noteDetection;
     private final TextView pitchTextView;
     private final Activity mainActivity;
     private final SpeedView speedView;
@@ -32,7 +33,9 @@ public class RecordingRunnable extends Thread {
         this.recorder = recorder;
         this.inputBuffer = inputBuffer;
         yinInstance = Yin.getInstance(recorder.getSampleRate());
-        noteDetection = new NoteDetection();
+        if (noteDetection == null) {
+            noteDetection = new NoteDetection(NotesStructure.getAllNotes());
+        }
         this.pitchTextView = pitchTextView;
         this.mainActivity = mainActivity;
         this.speedView = speedView;
@@ -45,7 +48,7 @@ public class RecordingRunnable extends Thread {
         while (recordingInProgress.get()) {
             recorder.read(inputBuffer, 0, inputBufferLength);
             double pitchInHz = yinInstance.getPitch(inputBuffer);
-            if (pitchInHz == -1) {
+            if (!Double.isFinite(pitchInHz) || pitchInHz == -1) {
                 continue;
             }
             Note closestNote = noteDetection.findClosestNote(pitchInHz);
@@ -56,6 +59,10 @@ public class RecordingRunnable extends Thread {
                 speedView.speedTo(Math.round(deltaInCents), NEEDLE_ANIMATION_SPEED);
             });
         }
+    }
+
+    public static synchronized void setNoteDetection(NoteDetection newNoteDetection) {
+        noteDetection = newNoteDetection;
     }
 
 }

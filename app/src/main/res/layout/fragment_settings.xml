@@ -57,7 +57,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchMaterial"
+        android:id="@+id/lockTunerSwitch"
         style="@style/Widget.Material3.CompoundButton.MaterialSwitch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline16" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchMaterial2"
+        android:id="@+id/loadLastMutedStateSwitch"
         style="@style/Widget.Material3.CompoundButton.MaterialSwitch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -80,18 +80,19 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline18"
         app:layout_constraintStart_toStartOf="@+id/guideline17"
-        app:layout_constraintTop_toBottomOf="@+id/switchMaterial" />
+        app:layout_constraintTop_toBottomOf="@+id/lockTunerSwitch" />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/resetDatabaseTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/reset_tunings_database"
         android:textColorHighlight="@color/custom_linen"
         android:paddingTop="10dp"
-        android:textColor="@color/custom_persian_red"
+        android:textColor="@drawable/custom_selector_color_red"
         android:textSize="18sp"
         android:autoLink="web"
         app:layout_constraintEnd_toStartOf="@+id/guideline18"
         app:layout_constraintStart_toStartOf="@+id/guideline17"
-        app:layout_constraintTop_toBottomOf="@+id/switchMaterial2" />
+        app:layout_constraintTop_toBottomOf="@+id/loadLastMutedStateSwitch" />
 </androidx.constraintlayout.widget.ConstraintLayout>

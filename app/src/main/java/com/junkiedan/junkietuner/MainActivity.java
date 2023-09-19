@@ -12,7 +12,6 @@ import android.util.Log;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.junkiedan.junkietuner.core.PreferencesDataStoreHandler;
 import com.junkiedan.junkietuner.data.TuningHandler;
-import com.junkiedan.junkietuner.util.notes.GuitarTuning;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -50,8 +49,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize the Database
         // TODO - Add search in the tunings list
+        // TODO - Replace all blockingFirst to improve performance
 
         initDatabase();
+
+        initSettings();
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
     }
@@ -109,6 +111,47 @@ public class MainActivity extends AppCompatActivity {
                     "fired when trying to retrieve hasBeenInitialized value from prefs");
             TuningHandler.resetDatabaseValuesToDefault(getApplication());
             PreferencesDataStoreHandler.setHasBeenInitialized(getApplicationContext(), true);
+        }
+    }
+
+    private void initSettings() {
+        // Set settings values in case they are not stored
+        // IS_TUNER_LOCKED
+        try {
+            boolean isTunerLocked = PreferencesDataStoreHandler
+                    .getIsTunerLocked(getApplicationContext())
+                    .blockingFirst();
+            Log.println(Log.DEBUG, "IS_TUNER_LOCKED", String.valueOf(isTunerLocked));
+        } catch (NullPointerException e) {
+            Log.println(Log.DEBUG, "IS_TUNER_LOCKED", "Value was not initialized." +
+                    " Set to `false`");
+            PreferencesDataStoreHandler.setIsTunerLocked(getApplicationContext(), false);
+        }
+
+        // IS_TUNER_LOCKED
+        try {
+            boolean isLoadLastMutedState = PreferencesDataStoreHandler
+                    .getIsLoadLastMutedState(getApplicationContext())
+                    .blockingFirst();
+            Log.println(Log.DEBUG, "IS_LOAD_LAST_MUTED_STATE",
+                    String.valueOf(isLoadLastMutedState));
+        } catch (NullPointerException e) {
+            Log.println(Log.DEBUG, "IS_LOAD_LAST_MUTED_STATE",
+                    "Value was not initialized. Set to `true`");
+            PreferencesDataStoreHandler
+                    .setIsLoadLastMutedState(getApplicationContext(), true);
+        }
+
+        // IS_MUTED
+        try {
+            boolean isTuning = PreferencesDataStoreHandler
+                    .getIsTuning(getApplicationContext())
+                    .blockingFirst();
+            Log.println(Log.DEBUG, "IS_TUNING", String.valueOf(isTuning));
+        } catch (NullPointerException e) {
+            Log.println(Log.DEBUG, "IS_TUNING",
+                    "Value was not initialized. Set to `true`");
+            PreferencesDataStoreHandler.setIsTuning(getApplicationContext(), true);
         }
     }
 

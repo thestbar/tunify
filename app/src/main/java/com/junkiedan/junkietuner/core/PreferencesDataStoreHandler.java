@@ -19,6 +19,12 @@ public class PreferencesDataStoreHandler {
             PreferencesKeys.intKey("current_tuning_id");
     private final static Preferences.Key<Boolean> HAS_BEEN_INITIALIZED =
             PreferencesKeys.booleanKey("has_been_initialized");
+    private final static Preferences.Key<Boolean> IS_TUNER_LOCKED =
+            PreferencesKeys.booleanKey("is_tuner_locked");
+    private final static Preferences.Key<Boolean> IS_LOAD_LAST_MUTED_STATE =
+            PreferencesKeys.booleanKey("is_load_last_muted_state");
+    private final static Preferences.Key<Boolean> IS_TUNING =
+            PreferencesKeys.booleanKey("is_tuning");
 
 
     private PreferencesDataStoreHandler() {
@@ -41,7 +47,7 @@ public class PreferencesDataStoreHandler {
         if (dataStore == null) {
             initDataStore(context);
         }
-        Single<Preferences> updateResult =  dataStore.updateDataAsync(prefsIn -> {
+        dataStore.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
             mutablePreferences.set(HAS_BEEN_INITIALIZED, value);
             return Single.just(mutablePreferences);
@@ -60,9 +66,66 @@ public class PreferencesDataStoreHandler {
         if (dataStore == null) {
             initDataStore(context);
         }
-        Single<Preferences> updateResult =  dataStore.updateDataAsync(prefsIn -> {
+        dataStore.updateDataAsync(prefsIn -> {
             MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
             mutablePreferences.set(CURRENT_TUNING_ID, newId);
+            return Single.just(mutablePreferences);
+        });
+    }
+
+    public static Flowable<Boolean> getIsTunerLocked(Context context) {
+        if (dataStore == null) {
+            initDataStore(context);
+        }
+        return dataStore.data().map(preferences ->
+                preferences.get(IS_TUNER_LOCKED));
+    }
+
+    public static void setIsTunerLocked(Context context, boolean value) {
+        if (dataStore == null) {
+            initDataStore(context);
+        }
+        dataStore.updateDataAsync(prefsIn -> {
+            MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
+            mutablePreferences.set(IS_TUNER_LOCKED, value);
+            return Single.just(mutablePreferences);
+        });
+    }
+
+    public static Flowable<Boolean> getIsLoadLastMutedState(Context context) {
+        if (dataStore == null) {
+            initDataStore(context);
+        }
+        return dataStore.data().map(preferences ->
+                preferences.get(IS_LOAD_LAST_MUTED_STATE));
+    }
+
+    public static void setIsLoadLastMutedState(Context context, boolean value) {
+        if (dataStore == null) {
+            initDataStore(context);
+        }
+        dataStore.updateDataAsync(prefsIn -> {
+            MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
+            mutablePreferences.set(IS_LOAD_LAST_MUTED_STATE, value);
+            return Single.just(mutablePreferences);
+        });
+    }
+
+    public static Flowable<Boolean> getIsTuning(Context context) {
+        if (dataStore == null) {
+            initDataStore(context);
+        }
+        return dataStore.data().map(preferences ->
+                preferences.get(IS_TUNING));
+    }
+
+    public static void setIsTuning(Context context, boolean value) {
+        if (dataStore == null) {
+            initDataStore(context);
+        }
+        dataStore.updateDataAsync(prefsIn -> {
+            MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
+            mutablePreferences.set(IS_TUNING, value);
             return Single.just(mutablePreferences);
         });
     }

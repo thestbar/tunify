@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import com.junkiedan.junkietuner.util.notes.Note;
 import com.junkiedan.junkietuner.util.notes.NotesStructure;
 
+import java.util.Arrays;
+
 /**
  * Class that creates an instance that can search for the closest
  * note of the spectrum of a given frequency. For more details of the
@@ -19,8 +21,8 @@ public class NoteDetection {
     private final Note[] allNotes;
     private final static double LOG2_TO_LOG10_CONVERSION_CONST = 1200 * (1 / Math.log10(2));
 
-    public NoteDetection() {
-        this.allNotes = NotesStructure.getAllNotes();
+    public NoteDetection(Note[] allNotes) {
+        this.allNotes = allNotes;
     }
 
     /**
