@@ -3,21 +3,32 @@ package com.junkiedan.junkietuner.data;
 import android.app.Application;
 import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
-
 import com.junkiedan.junkietuner.data.dao.TuningDao;
 import com.junkiedan.junkietuner.data.databases.JunkieTunerAppDatabase;
 import com.junkiedan.junkietuner.data.entities.Tuning;
-
 import java.util.List;
 
+/**
+ * Class that uses the Repository Design Pattern to perform the
+ * queries in the Room Database asynchronously. The READ operations
+ * store the information in LiveData objects and the WRITE, UPDATE and
+ * DELETE operations are executed asynchronously using the doInBackground
+ * method of objects that extend from AsyncTask<?, ?, ?> class.
+ * @author Stavros Barousis
+ */
 public class TuningRepository {
-    private TuningDao tuningDao;
-    private LiveData<List<Tuning>> allTunings;
 
+    // Reference to the DAO
+    private final TuningDao tuningDao;
+
+
+    /**
+     * Public constructor of the Repository class.
+     * @param application The current Application object.
+     */
     public TuningRepository(Application application) {
         JunkieTunerAppDatabase db = JunkieTunerAppDatabase.getDatabase(application);
         tuningDao = db.tuningDao();
-        allTunings = tuningDao.getAllTunings();
     }
 
     public LiveData<List<Tuning>> getAllTunings() {

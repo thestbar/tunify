@@ -7,11 +7,13 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
-
 import com.junkiedan.junkietuner.data.entities.Tuning;
-
 import java.util.List;
 
+/**
+ * DAO interface that is used for the
+ * creation of the Android Room Database.
+ */
 @Dao
 public interface TuningDao {
     @Query("SELECT * FROM Tuning")

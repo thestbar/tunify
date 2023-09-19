@@ -3,7 +3,7 @@ package com.junkiedan.junkietuner.util.algorithms;
 /**
  * This class contains an implementation of the Yin Pitch Detection Algorithm.
  * More information on the algorithm can be found on the detailed implementation paper
- * which was written by Hideki Kawahara
+ * which was written by Alain de Cheveigné and Hideki Kawahara
  * (<a href="http://recherche.ircam.fr/equipes/pcm/cheveign/ps/2002_JASA_YIN_proof.pdf">link here</a>).
  * This algorithm was developed to be used in a guitar tuner for Android platform.
  * @author Stavros Barousis

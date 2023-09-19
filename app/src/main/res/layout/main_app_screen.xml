@@ -27,7 +27,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
-        android:name="com.junkiedan.junkietuner.MainFragment"
+        android:name="com.junkiedan.junkietuner.core.fragments.MainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_main" />

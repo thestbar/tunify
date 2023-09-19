@@ -7,7 +7,7 @@
     android:background="@color/custom_raisin_black"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
-    tools:context=".AddTuningDialogFragment">
+    tools:context=".core.fragments.AddTuningDialogFragment">
 
     <TextView
         android:id="@+id/newTuningNotesLabelId"

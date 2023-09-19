@@ -1,50 +1,43 @@
-package com.junkiedan.junkietuner;
-
-import static android.content.DialogInterface.BUTTON_POSITIVE;
+package com.junkiedan.junkietuner.core.fragments;
 
 import android.app.Application;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputLayout;
+import com.junkiedan.junkietuner.R;
 import com.junkiedan.junkietuner.core.PreferencesDataStoreHandler;
 import com.junkiedan.junkietuner.core.TuningAdapter;
 import com.junkiedan.junkietuner.data.entities.Tuning;
 import com.junkiedan.junkietuner.data.viewmodels.TuningViewModel;
-import com.junkiedan.junkietuner.util.notes.NotesStructure;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link TuningsFragment#newInstance} factory method to
  * create an instance of this fragment.
+ * The fragment that displays all the tunings that are stored in the database.
+ * Through this fragment users are able to add new tunings to the database,
+ * edit existing ones or delete them.
+ * @author Stavros Barousis
  */
 public class TuningsFragment extends Fragment {
 
+    // Reference to the recycler view that displays
+    // all the tunings from the database.
     private RecyclerView recyclerView;
+    // Reference to the FloatingActionButton that
+    // is the button that users click in order to
+    // add a new tuning to the database.
     private FloatingActionButton addTuningButton;
 
     public TuningsFragment() {
@@ -76,12 +69,20 @@ public class TuningsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // Reference to the application object.
         Application application = requireActivity().getApplication();
 
+        // Initialize the reference to the RecyclerView.
         recyclerView = requireView().findViewById(R.id.tuningsList);
 
+        // initSelectedItemId contains the id of the initial selected item.
+        // Its value is set to -1.
         int initSelectedItemId = -1;
         try {
+            // Inside the try block the CURRENT_TUNING_ID will be retrieved.
+            // Here blockingFirst() is used, which blocks the current thread
+            // until the value is retrieved.
+            // TODO - Change blockingFirst() with asynchronous operation.
             initSelectedItemId = PreferencesDataStoreHandler.getCurrentTuningId(requireContext())
                     .blockingFirst();
         } catch (NullPointerException e) {
@@ -91,21 +92,28 @@ public class TuningsFragment extends Fragment {
                     "initialized in PreferencesDataStore.");
         }
 
+        // Initialize the TuningAdapter object that will be passed
+        // to the RecyclerView.
         TuningAdapter tuningAdapter = new TuningAdapter(new ArrayList<>(),
                 getChildFragmentManager(), initSelectedItemId);
         recyclerView.setAdapter(tuningAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
+        // The observer object that observes for changes in the tuning list.
         final Observer<List<Tuning>> tuningListObserver = tunings -> {
+            // When a change is observed then the new tunings list is passed
+            // to the tuningAdapter.
             tuningAdapter.setTuningList(tunings);
             recyclerView.setAdapter(tuningAdapter);
         };
+        // The observe to the current tunings is initialized.
         TuningViewModel.getCurrentTunings(application)
                 .observe(getViewLifecycleOwner(), tuningListObserver);
+
+        // Initialize the reference to the addTuningButton and set
+        // it's onClickListener to open the AddTuningDialogFragment.
         addTuningButton = requireView().findViewById(R.id.addTuningButton);
-        addTuningButton.setOnClickListener(v -> {
-            new AddTuningDialogFragment()
-                    .show(getChildFragmentManager(), "AddTuningDialogFragment");
-        });
+        addTuningButton.setOnClickListener(v -> new AddTuningDialogFragment()
+                .show(getChildFragmentManager(), "AddTuningDialogFragment"));
     }
 }

@@ -15,9 +15,10 @@ public class NotesStructure {
     private static final String[] notesAnno = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
     private NotesStructure() {
-
+        // Private empty constructor. This class will never be instantiated.
     }
 
+    // Function that initializes all the notes.
     private static void initNotes() {
         double concertPitch = 440.0;
         // 12 notes per octave * 8 included octaves for the tuner
@@ -44,6 +45,10 @@ public class NotesStructure {
         }
     }
 
+    /**
+     * Function that returns all the notes in a Note objects array.
+     * @return The array of the Note objects.
+     */
     public static Note[] getAllNotes() {
         if (allNotes == null) {
             initNotes();
@@ -58,9 +63,14 @@ public class NotesStructure {
     }
 
     /**
+     * Searches for a specific note object in the
+     * array of the Note objects. The search is performed
+     * by the name of the Note.
      * TODO Implement Binary Search!
-     * @param noteName 0
-     * @return 0
+     * @param noteName The String that contains the Note that
+     *                 the function will search of.
+     * @return The Note that has the noteName as name or
+     * null if the note does not exist.
      */
     public static Note searchNote(String noteName) {
         if (allNotes == null) {
@@ -74,6 +84,16 @@ public class NotesStructure {
         return null;
     }
 
+    /**
+     * Searches for the index of a specific note object in the
+     * array of the Note objects. The search is performed
+     * by the name of the Note.
+     * TODO Implement Binary Search!
+     * @param noteName The String that contains the Note that
+     *                 the function will search of.
+     * @return The index of the Note that has the noteName as name or
+     * -1 if the note does not exist.
+     */
     public static int searchNoteIndex(String noteName) {
         if (allNotes == null) {
             initNotes();
@@ -87,7 +107,12 @@ public class NotesStructure {
         return -1;
     }
 
-
+    /**
+     * Static function that returns all the Notes of the NotesStructure
+     * as a big string array.
+     * @return The String array that contains all the values of the names
+     * of the Notes.
+     */
     public static String[] getNotesAsStringArray() {
         if (allNotes == null) {
             initNotes();

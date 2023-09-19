@@ -1,41 +1,33 @@
 package com.junkiedan.junkietuner.core;
 
-import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Debug;
 import android.os.Vibrator;
-import android.preference.Preference;
-import android.util.ArrayMap;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.junkiedan.junkietuner.AddTuningDialogFragment;
-import com.junkiedan.junkietuner.MainActivity;
 import com.junkiedan.junkietuner.R;
+import com.junkiedan.junkietuner.core.fragments.AddTuningDialogFragment;
 import com.junkiedan.junkietuner.data.entities.Tuning;
 import com.junkiedan.junkietuner.data.viewmodels.TuningViewModel;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-// Create the basic adapter extending from RecyclerView.Adapter
-// Note that we specify the custom ViewHolder which gives us access to our views
+/**
+ * Create the basic adapter extending from RecyclerView.Adapter.
+ * Note that we specify the custom ViewHolder which gives us access to our views.
+ * @author Stavros Barousis
+ */
 public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder> {
 
     // Provide a direct reference to each of the views within a data item
@@ -72,15 +64,34 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
 
     // Store a member variable for the tunings
     private List<Tuning> tuningList;
-    private FragmentManager fragmentManager;
+    // Reference to the fragment manager that is used
+    // to open the new tuning dialog fragment
+    private final FragmentManager fragmentManager;
     // Vibrator used for the buzz
     private Vibrator vibrator;
+    // Reference to the parent context (might be unnecessary)
     private Context context;
-
+    // Holds the id (database tuning.id) of the currently
+    // selected tuning
     private int selectedItemId;
+    // Map that holds a reference on every view holder that is active
+    // TODO - viewHolderMap never deletes its values even if a row is completely
+    //        deleted from the database. Also, counting the fact that it is static
+    //        this might lead to some extra memory usage that is unnecessary.
+    //        Planning to delete items from this HashMap and also check if there are
+    //        any ways that can help probably improve performance and reduce the risk
+    //        of extra memory usage.
     private static final Map<Integer, ViewHolder> viewHolderMap = new HashMap<>();
 
-    // Pass in the contact array into the constructor
+    /**
+     * Public constructor that creates a new Tuning Adapter that will be
+     * used by the recycler view item that displays all the tuning of
+     * the application.
+     * @param tuningList Pass in the tuning list into the constructor.
+     * @param fragmentManager Reference to the fragment manager.
+     * @param selectedItemId Currently selected item id (Value is fetched
+     *                       from Preferences DataStore).
+     */
     public TuningAdapter(List<Tuning> tuningList, FragmentManager fragmentManager,
                          int selectedItemId) {
         this.tuningList = tuningList;
@@ -88,11 +99,24 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
         this.selectedItemId = selectedItemId;
     }
 
+    /**
+     * Setter method for the tunings list.
+     * @param tuningList The changed tuning list that needs to be displayed
+     *                   from the adapter.
+     */
     public void setTuningList(List<Tuning> tuningList) {
         this.tuningList = tuningList;
     }
 
-    // Usually involves inflating a layout from XML and returning the holder
+    /**
+     * This method usually involves inflating a layout from XML
+     * and returning the holder.
+     * @param parent The ViewGroup into which the new View will be added after it is bound to
+     *               an adapter position.
+     * @param viewType The view type of the new View.
+     *
+     * @return The currently created view holder item.
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -107,7 +131,12 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
         return new ViewHolder(tuningView);
     }
 
-    // Involves populating data into the item through holder
+    /**
+     * Involves populating data into the item through holder
+     * @param holder The ViewHolder which should be updated to represent the contents of the
+     *        item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Get the data model based on position
@@ -124,7 +153,7 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
         holder.notesTextView.setText(tuning.notesFormatted());
         holder.deleteButton.setOnClickListener(v -> {
             Log.println(Log.DEBUG, "Deleting Tuning From DB", String.valueOf(tuning));
-            TuningViewModel.deleteOne(tuning);
+            TuningViewModel.deleteOne((Application) context.getApplicationContext(), tuning);
         });
         // Set when user long clicks on the whole parent element
         // of the text view to open the edit dialog
@@ -157,7 +186,9 @@ public class TuningAdapter extends RecyclerView.Adapter<TuningAdapter.ViewHolder
         });
     }
 
-    // Returns the total count of items in the list
+    /**
+     * @return Total count of items in the list
+     */
     @Override
     public int getItemCount() {
         return tuningList.size();

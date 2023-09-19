@@ -1,33 +1,24 @@
-package com.junkiedan.junkietuner;
+package com.junkiedan.junkietuner.core.fragments;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
-import android.os.Debug;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.junkiedan.junkietuner.R;
 import com.junkiedan.junkietuner.data.TuningHandler;
 import com.junkiedan.junkietuner.data.entities.Tuning;
 import com.junkiedan.junkietuner.data.viewmodels.TuningViewModel;
 import com.junkiedan.junkietuner.util.notes.GuitarTuning;
 import com.junkiedan.junkietuner.util.notes.Note;
 import com.junkiedan.junkietuner.util.notes.NotesStructure;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,13 +27,25 @@ import java.util.Objects;
  * A simple {@link DialogFragment} subclass.
  * Use the {@link AddTuningDialogFragment#newInstance} factory method to
  * create an instance of this fragment.
+ * This class contains the fragment that is displayed when a user tries
+ * to add a new Tuning in the Tuning's Database.
+ * @author Stavros Barousis
  */
 public class AddTuningDialogFragment extends DialogFragment {
 
+    // Reference to the positive button of the view.
     private Button okButton;
+    // Reference to the negative button of the view.
     private Button cancelButton;
+    // Reference to the TextInputEditText of the view that will contain
+    // the name of the new Tuning.
     private TextInputEditText nameInput;
+    // A list with references to all the Spinner objects of the view.
+    // The spinners will contain the notes of the new tuning.
     private List<Spinner> notesList;
+    // The tuning object that is created (when the tuning is new)
+    // or is loaded from the application if the user tries to edit
+    // an existing item from the database.
     private final Tuning tuning;
 
     public AddTuningDialogFragment() {

@@ -1,11 +1,7 @@
 package com.junkiedan.junkietuner.util.algorithms;
 
 import androidx.annotation.NonNull;
-
 import com.junkiedan.junkietuner.util.notes.Note;
-import com.junkiedan.junkietuner.util.notes.NotesStructure;
-
-import java.util.Arrays;
 
 /**
  * Class that creates an instance that can search for the closest

@@ -1,4 +1,4 @@
-package com.junkiedan.junkietuner;
+package com.junkiedan.junkietuner.core.fragments;
 
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
@@ -23,28 +23,33 @@ import android.widget.TextView;
 import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.Section;
 import com.github.anastr.speedviewlib.components.Style;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.junkiedan.junkietuner.R;
 import com.junkiedan.junkietuner.core.PreferencesDataStoreHandler;
 import com.junkiedan.junkietuner.core.RecordingRunnable;
+import com.junkiedan.junkietuner.core.activities.MainActivity;
 import com.junkiedan.junkietuner.data.TuningHandler;
 import com.junkiedan.junkietuner.data.entities.Tuning;
 import com.junkiedan.junkietuner.data.viewmodels.TuningViewModel;
 import com.junkiedan.junkietuner.util.algorithms.NoteDetection;
 import com.junkiedan.junkietuner.util.notes.GuitarTuning;
 import com.junkiedan.junkietuner.util.notes.Note;
-import com.junkiedan.junkietuner.util.notes.NotesStructure;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MainFragment#newInstance} factory method to
  * create an instance of this fragment.
+ * The main fragment of the application contains the actual
+ * tuner functionality and runs the RecordingRunnable instance
+ * that performs the pitch detection.
+ * @author Stavros Barousis
  */
 public class MainFragment extends Fragment {
 
@@ -52,36 +57,40 @@ public class MainFragment extends Fragment {
     private static final int SAMPLING_RATE_IN_HZ = 44100;
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
-    /**
-     * Factor by that the minimum buffer size is multiplied. The bigger the factor is the less
-     * likely it is that samples will be dropped, but more memory will be used. The minimum buffer
-     * size is determined by {@link AudioRecord#getMinBufferSize(int, int, int)} and depends on the
-     * recording settings.
-     */
+    // Factor by that the minimum buffer size is multiplied. The bigger the factor is the less
+    // likely it is that samples will be dropped, but more memory will be used. The minimum buffer
+    // size is determined by {@link AudioRecord#getMinBufferSize(int, int, int)} and depends on the
+    // recording settings.
     private static final int BUFFER_SIZE_FACTOR = 4;
-    /**
-     * Size of the buffer where the audio data is stored by Android
-     */
+    // Size of the buffer where the audio data is stored by Android
     private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLING_RATE_IN_HZ,
             CHANNEL_CONFIG, AUDIO_FORMAT) * BUFFER_SIZE_FACTOR;
-    /**
-     * Signals whether a recording is in progress (true) or not (false).
-     */
+    // Signals whether a recording is in progress (true) or not (false).
     private final AtomicBoolean recordingInProgress = new AtomicBoolean(false);
+    // Reference to the AudioRecorder object.
     private AudioRecord recorder = null;
+    // Reference to the thread that runs the RecordingRunnable class.
     private Thread recordingThread = null;
+    // The buffer that will be used to store the RAW input.
     private short[] buffer = null;
+    // Reference to the switch that enables/disables tuning.
     private SwitchMaterial tuningSwitch = null;
+    // Reference to the TextView that displays the note that is
+    // closest to pitch detected by the PD algorithm.
     private TextView pitchTextView = null;
-    //    private SwitchMaterial tuningSwitch = null;
     private final static String SWITCH_TURNED_ON_STR = "Tuning";
     private final static String SWITCH_TURNED_OFF_STR = "Muted";
+    // Reference to the SpeedView object that displays
+    // the difference in cents from the closest Note.
     private SpeedView speedView = null;
     public final static long NEEDLE_ANIMATION_SPEED = 300;
-
+    // Holds value true if application has permission to record
+    // else holds value false.
     private boolean permissionToRecordAccepted;
-    private String[] permissions;
-
+    // Contains all the permissions list.
+    private final String[] permissions = {android.Manifest.permission.RECORD_AUDIO};
+    // References to the text views that contain the notes
+    // of the selected tuning.
     private List<TextView> notesTextViewList;
 
     public MainFragment() {
@@ -101,8 +110,8 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        permissions = ((MainActivity) requireActivity()).getPermissions();
-        permissionToRecordAccepted = ((MainActivity) requireActivity()).isPermissionToRecordAccepted();
+        permissionToRecordAccepted = PackageManager.PERMISSION_GRANTED == requireContext()
+            .checkCallingOrSelfPermission(android.Manifest.permission.RECORD_AUDIO);
     }
 
     @Override
@@ -139,6 +148,7 @@ public class MainFragment extends Fragment {
         // If IS_LOAD_LAST_MUTED_STATE is true and IS_TUNING
         // is true then we should start recording
         try {
+            // TODO - Should change blockingFirst() to an asynchronous functionality.
             boolean isLoadLastMutedState = PreferencesDataStoreHandler
                     .getIsLoadLastMutedState(requireContext())
                     .blockingFirst();
@@ -169,8 +179,29 @@ public class MainFragment extends Fragment {
         }
     }
 
+    // Initializes the switch that enables/disables tuning.
+    // The 1st time the application opens these values are not in the
+    // Preferences DataStore, so in the catch block they are initialized.
     private void initTuningSwitch() {
         tuningSwitch = requireView().findViewById(R.id.tuningSwitch);
+        // In case users did not granted access to the application to record.
+        if (!permissionToRecordAccepted) {
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Tuner has no access to microphone")
+                    .setMessage("In order to use this tuner you need to grant access to the " +
+                            " application for the microphone of the device. Go to settings, " +
+                            "grant access manually to the device's microphone and restart the" +
+                            " application.")
+                    .setNegativeButton("Close the application", (dialog, which) -> {
+                        // Kill the application.
+                        requireActivity().finish();
+                    })
+                    .setCancelable(false)
+                    .show();
+            return;
+        }
+
+        // TODO - Should change blockingFirst() to an asynchronous functionality.
         try {
             boolean isLoadLastMutedState = PreferencesDataStoreHandler
                     .getIsLoadLastMutedState(requireContext())
@@ -195,11 +226,15 @@ public class MainFragment extends Fragment {
         });
     }
 
+    // Initializes the text view that holds the closest note of the pitch
+    // detected by the PDA.
     private void initPitchTextView() {
         pitchTextView = requireView().findViewById(R.id.textViewPitch);
         pitchTextView.setText("");
     }
 
+    // Initializes the speed view item. Mostly here the style of the speed view
+    // is initialized.
     private void initSpeedView() {
         speedView = requireView().findViewById(R.id.speedView);
 
@@ -226,6 +261,8 @@ public class MainFragment extends Fragment {
         speedView.setTickPadding(20);
     }
 
+    // Fetches the value of the selected tuning (if it exists).
+    // or creates a default one with Standard E.
     private void initSelectedTuning() {
         // Retrieve current tuning id from preferences
         Flowable<Integer> currentTuningIdFlowable = PreferencesDataStoreHandler
@@ -284,6 +321,7 @@ public class MainFragment extends Fragment {
         currentTuning.observe(getViewLifecycleOwner(), observer);
     }
 
+    // Initializes all the notes text views.
     private void initNotesTextViewList() {
         notesTextViewList = new ArrayList<>();
         notesTextViewList.add(requireView().findViewById(R.id.textViewNote1));
@@ -294,6 +332,7 @@ public class MainFragment extends Fragment {
         notesTextViewList.add(requireView().findViewById(R.id.textViewNote6));
     }
 
+    // Enables Tunings
     private void startRecording() {
         if (ActivityCompat.checkSelfPermission(requireActivity(), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), permissions, REQUEST_RECORD_AUDIO_PERMISSION);
@@ -320,6 +359,7 @@ public class MainFragment extends Fragment {
         tuningSwitch.setText(SWITCH_TURNED_ON_STR);
     }
 
+    // Disables Tuning.
     private void stopRecording() {
         if(recorder == null) {
             return;
@@ -334,6 +374,9 @@ public class MainFragment extends Fragment {
         speedView.speedTo(0, NEEDLE_ANIMATION_SPEED);
     }
 
+    // This function ensures that the setChecked value of the switch that
+    // enables/disables the tuning functionality, is never called without
+    // the change being stored in the Preferences DataStore.
     private void setSwitchChecked(boolean value) {
         tuningSwitch.setChecked(value);
         PreferencesDataStoreHandler.setIsTuning(requireContext(), value);

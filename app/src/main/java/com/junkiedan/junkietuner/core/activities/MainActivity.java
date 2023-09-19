@@ -1,4 +1,4 @@
-package com.junkiedan.junkietuner;
+package com.junkiedan.junkietuner.core.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,16 +8,27 @@ import androidx.fragment.app.FragmentManager;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.junkiedan.junkietuner.R;
+import com.junkiedan.junkietuner.core.fragments.InfoFragment;
+import com.junkiedan.junkietuner.core.fragments.MainFragment;
 import com.junkiedan.junkietuner.core.PreferencesDataStoreHandler;
+import com.junkiedan.junkietuner.core.fragments.SettingsFragment;
+import com.junkiedan.junkietuner.core.fragments.TuningsFragment;
 import com.junkiedan.junkietuner.data.TuningHandler;
-
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * Main Parent Activity of the Application. All the basic initialization
+ * of the application is performed here and all the fragments are displayed
+ * and switched through this activity.
+ * @author Stavros Barousis
+ */
+// TODO - Add search in the tunings list.
+// TODO - Replace all blockingFirst to improve performance (if applicable).
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
@@ -27,15 +38,11 @@ public class MainActivity extends AppCompatActivity {
     private final String[] permissions = {android.Manifest.permission.RECORD_AUDIO};
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_RECORD_AUDIO_PERMISSION:
-                permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                break;
-        }
-        if (!permissionToRecordAccepted) {
-            finish();
+        if (grantResults.length > 0 && requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
+            permissionToRecordAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
         }
     }
 
@@ -48,14 +55,11 @@ public class MainActivity extends AppCompatActivity {
         initBottomNavBar();
 
         // Initialize the Database
-        // TODO - Add search in the tunings list
-        // TODO - Replace all blockingFirst to improve performance
-
         initDatabase();
 
         initSettings();
 
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+        askForPermissions();
     }
 
     @Override
@@ -73,6 +77,11 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    /**
+     * Function that initializes the bottom navigation bar of the application.
+     * Through the nav bar all the different fragments are displayed on the screen
+     * of the application.
+     */
     private void initBottomNavBar() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener( item -> {
@@ -97,6 +106,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Initializes the connection with the database of the application.
+     * In case the database has never been initialized (For example
+     * it is the 1st time that the application runs in a new device)
+     * then the application automatically initializes it.
+     */
     private void initDatabase() {
         // Reset DB only if it is the first time that the application opens
         try {
@@ -114,6 +129,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Initializes the configuration settings  of the application.
+     * In case the settings parameters have never been initialized
+     * (For example it is the 1st time that the application runs
+     * in a new device) then the application automatically initializes
+     * them.
+     */
     private void initSettings() {
         // Set settings values in case they are not stored
         // IS_TUNER_LOCKED
@@ -155,6 +177,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * The manager that transitions between the fragments of the application
+     * when the users click to navigate to a different tab from the nav bar.
+     * @param fragmentManager The fragment manager of the application.
+     * @param targetFragmentClass The class of the new fragment that will be
+     *                            displayed on the screen.
+     * @param currentFragmentClass The current fragment that screen shows
+     *                             to the user.
+     * @param backStackName The back stage name which will be stored in the stack.
+     * @return True if the transition is completed. False if the transition is
+     * not completed. When the user click to navigate to the fragment that they
+     * already are then the transition is not performed.
+     */
     private boolean transitionFragment(FragmentManager fragmentManager,
                                     Class<? extends Fragment> targetFragmentClass,
                                     Class<? extends Fragment> currentFragmentClass,
@@ -170,11 +205,21 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Getter for the permission to record of the application.
+     * @return True if the application has access to record, else
+     * false.
+     */
     public boolean isPermissionToRecordAccepted() {
         return permissionToRecordAccepted;
     }
 
-    public String[] getPermissions() {
-        return permissions;
+    /**
+     * Function that asks for permission on the device's microphone.
+     */
+    public void askForPermissions() {
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
+        System.out.println(Arrays.toString(permissions));
+        System.out.println(isPermissionToRecordAccepted());
     }
 }

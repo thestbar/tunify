@@ -1,18 +1,33 @@
 package com.junkiedan.junkietuner.data;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
-
 import com.junkiedan.junkietuner.data.entities.Tuning;
 import com.junkiedan.junkietuner.data.viewmodels.TuningViewModel;
 import com.junkiedan.junkietuner.util.notes.GuitarTuning;
 import com.junkiedan.junkietuner.util.notes.Note;
-
 import org.jetbrains.annotations.Contract;
 
+/**
+ * This class contains some static methods that are used to manipulate
+ * the Guitar Tunings in order to perform CRUD operations to the database
+ * and display information of the screen of the application.
+ * @author Stavros Barousis
+ */
 public class TuningHandler {
 
+    /**
+     * Creates a GuitarTuning object from a Tuning object. The base
+     * difference between a GuitarTuning and a Tuning object is that
+     * the former contains an array of Note class objects that can be
+     * used to perform some calculation when the actual Note objects
+     * are needed and the latter contains the notes in a String format
+     * (For example "[E2,A2,D3,G3,B3,E4]".
+     * @param tuning The tuning object that will be used to create
+     *               the GuitarTuning object.
+     * @return The GuitarTuningObject that was created from the
+     * Tuning object.
+     */
     @NonNull
     @Contract("_ -> new")
     public static GuitarTuning getGuitarTuningFromTuning(@NonNull Tuning tuning) {
@@ -22,6 +37,13 @@ public class TuningHandler {
         return new GuitarTuning(tuning.name, notes);
     }
 
+    /**
+     * Given a Note object the formatted tuning notes list is constructed.
+     * For example for the notes that are stored in a note array E2 A2 D3 G3 B3 E4
+     * the string "[E2,A2,D3,G3,B3,E4]" is constructed.
+     * @param notes The Note objects array that will be used to create the String.
+     * @return The Note Array String formatted as explained above.
+     */
     @NonNull
     public static String getNotesStringFromNotesArray(@NonNull Note[] notes) {
         StringBuilder notesStr = new StringBuilder();
@@ -34,6 +56,10 @@ public class TuningHandler {
         return notesStr.toString();
     }
 
+    /**
+     * Function that initializes the database with the standard tunings.
+     * @param application The Application Object.
+     */
     public static void resetDatabaseValuesToDefault(Application application) {
         // Delete everything (if applicable)
         TuningViewModel.deleteAll(application);
