@@ -27,9 +27,10 @@ import dev.thestbar.tunify.data.entities.Tuning
 import dev.thestbar.tunify.data.viewmodels.TuningViewModel
 import dev.thestbar.tunify.databinding.FragmentMainBinding
 import dev.thestbar.tunify.util.algorithms.NoteDetection
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.concurrent.atomic.AtomicBoolean
 
 class MainFragment : Fragment() {
 
@@ -38,9 +39,8 @@ class MainFragment : Fragment() {
 
     private val viewModel: TuningViewModel by activityViewModels()
 
-    private val recordingInProgress = AtomicBoolean(false)
     private var recorder: AudioRecord? = null
-    private var recordingThread: Thread? = null
+    private var recordingJob: Job? = null
     private var buffer: ShortArray? = null
     private var permissionToRecordAccepted = false
     private val permissions = arrayOf(android.Manifest.permission.RECORD_AUDIO)
@@ -245,28 +245,20 @@ class MainFragment : Fragment() {
         )
         recorder = rec
         rec.startRecording()
-        recordingInProgress.set(true)
-        recordingThread = Thread(
-            RecordingRunnable(
-                requireActivity(),
-                recordingInProgress,
-                rec,
-                binding.textViewPitch,
-                binding.speedView,
-                buf
-            ),
-            "Recording Thread"
-        ).also { it.start() }
+        val runnable = RecordingRunnable(rec, binding.textViewPitch, binding.speedView, buf)
+        recordingJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            runnable.record()
+        }
         binding.tuningSwitch.text = SWITCH_TURNED_ON_STR
     }
 
     private fun stopRecording() {
         val rec = recorder ?: return
-        recordingInProgress.set(false)
+        recordingJob?.cancel()
+        recordingJob = null
         rec.stop()
         rec.release()
         recorder = null
-        recordingThread = null
         binding.textViewPitch.text = ""
         binding.tuningSwitch.text = SWITCH_TURNED_OFF_STR
         binding.speedView.speedTo(0f, NEEDLE_ANIMATION_SPEED)
