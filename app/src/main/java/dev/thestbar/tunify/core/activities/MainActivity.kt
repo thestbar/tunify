@@ -8,14 +8,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import dev.thestbar.tunify.R
 import dev.thestbar.tunify.core.PreferencesDataStoreHandler
-import dev.thestbar.tunify.core.fragments.InfoFragment
-import dev.thestbar.tunify.core.fragments.MainFragment
-import dev.thestbar.tunify.core.fragments.SettingsFragment
-import dev.thestbar.tunify.core.fragments.TuningsFragment
 import dev.thestbar.tunify.data.TuningHandler
 import dev.thestbar.tunify.data.TuningRepository
 import dev.thestbar.tunify.databinding.MainAppScreenBinding
@@ -47,35 +44,19 @@ class MainActivity : AppCompatActivity() {
         binding = MainAppScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initBottomNavBar()
+        initNavigation()
         initDatabase()
         initSettings()
         askForPermissions()
     }
 
-    private fun initBottomNavBar() {
-        val bottomNav = binding.bottomNavigation
-        bottomNav.setOnItemSelectedListener { item ->
-            val fragmentManager = supportFragmentManager
-            val allFragments = fragmentManager.fragments
-            val currentFragmentClass = allFragments.last()::class.java
-            when (item.itemId) {
-                R.id.page_1 -> transitionFragment(
-                    MainFragment::class.java, currentFragmentClass, "Main Screen"
-                )
-                R.id.page_2 -> transitionFragment(
-                    TuningsFragment::class.java, currentFragmentClass, "Tunings Screen"
-                )
-                R.id.page_3 -> transitionFragment(
-                    SettingsFragment::class.java, currentFragmentClass, "Settings Screen"
-                )
-                R.id.page_4 -> transitionFragment(
-                    InfoFragment::class.java, currentFragmentClass, "Info Screen"
-                )
-                else -> false
-            }
-        }
-        ViewCompat.setOnApplyWindowInsetsListener(bottomNav) { v, insets ->
+    private fun initNavigation() {
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+        binding.bottomNavigation.setupWithNavController(navController)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNavigation) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, systemBars.bottom)
             insets
@@ -140,20 +121,6 @@ class MainActivity : AppCompatActivity() {
                 PreferencesDataStoreHandler.setIsTuning(applicationContext, true)
             }
         }
-    }
-
-    private fun transitionFragment(
-        targetFragmentClass: Class<out Fragment>,
-        currentFragmentClass: Class<out Fragment>,
-        backStackName: String
-    ): Boolean {
-        if (currentFragmentClass == targetFragmentClass) return false
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainerView, targetFragmentClass, null)
-            .setReorderingAllowed(true)
-            .addToBackStack(backStackName)
-            .commit()
-        return true
     }
 
     fun isPermissionToRecordAccepted(): Boolean = permissionToRecordAccepted
