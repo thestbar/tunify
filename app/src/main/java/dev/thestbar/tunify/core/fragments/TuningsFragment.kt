@@ -30,6 +30,9 @@ class TuningsFragment : Fragment() {
 
     private val viewModel: TuningViewModel by activityViewModels()
 
+    private var adapter: TuningAdapter? = null
+    private var scrollToTopPending = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,7 +50,7 @@ class TuningsFragment : Fragment() {
                 .getCurrentTuningId(requireContext())
                 .first() ?: -1
 
-            val adapter = TuningAdapter(
+            adapter = TuningAdapter(
                 fragmentManager = childFragmentManager,
                 selectedItemId = initSelectedItemId,
                 viewModel = viewModel,
@@ -58,7 +61,12 @@ class TuningsFragment : Fragment() {
 
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.filteredTunings.collect { tunings ->
-                    adapter.submitList(tunings)
+                    adapter?.submitList(tunings) {
+                        if (scrollToTopPending) {
+                            scrollToTopPending = false
+                            binding.tuningsList.scrollToPosition(0)
+                        }
+                    }
                 }
             }
         }
@@ -76,11 +84,14 @@ class TuningsFragment : Fragment() {
             popup.menu.add(0, 0, 0, getString(R.string.sort_default))
             popup.menu.add(0, 1, 1, getString(R.string.sort_name_asc))
             popup.menu.add(0, 2, 2, getString(R.string.sort_name_desc))
+            popup.menu.add(0, 3, 3, getString(R.string.sort_id_desc))
             popup.setOnMenuItemClickListener { item ->
+                scrollToTopPending = true
                 when (item.itemId) {
                     0 -> viewModel.setSortOrder(SortOrder.DEFAULT)
                     1 -> viewModel.setSortOrder(SortOrder.NAME_ASC)
                     2 -> viewModel.setSortOrder(SortOrder.NAME_DESC)
+                    3 -> viewModel.setSortOrder(SortOrder.ID_DESC)
                 }
                 true
             }
@@ -96,6 +107,7 @@ class TuningsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        adapter = null
         _binding = null
     }
 
