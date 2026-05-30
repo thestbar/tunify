@@ -2,14 +2,14 @@
 
 **Date:** 2026-05-30
 **Status:** Approved, ready for implementation planning
-**Scope:** Migrate all 21 Java source files in `app/src/main/java/` to idiomatic Kotlin, adopt ViewBinding, rename package to `com.thestbar.tunify`, and add pure-logic unit tests.
+**Scope:** Migrate all 21 Java source files in `app/src/main/java/` to idiomatic Kotlin, adopt ViewBinding, rename package to `dev.thestbar.tunify`, and add pure-logic unit tests.
 
 ## Goals
 
 1. Replace every `.java` file in `app/src/main/java/` with an idiomatic Kotlin equivalent.
 2. Replace deprecated/problematic patterns with modern Kotlin idioms (Coroutines, Flow, proper `ViewModelProvider`, `data class`, `object`, `@Parcelize`).
 3. Adopt ViewBinding throughout, eliminating `findViewById` calls.
-4. Rename the package from `com.junkiedan.junkietuner` to `com.thestbar.tunify`.
+4. Rename the package from `com.junkiedan.junkietuner` to `dev.thestbar.tunify`.
 5. Add a pure-logic unit test suite covering pitch detection, note structure, and tuning parsing.
 6. Remove RxJava dependencies once no longer needed.
 
@@ -19,7 +19,7 @@
 - No new features.
 - No Room schema/version changes — column shape is unchanged.
 - No instrumented/Espresso tests, no DAO tests, no mocking framework.
-- No `applicationId` change to `com.tunify` (would imply ownership of `tunify.com`).
+- No `applicationId` change to `com.tunify` (would imply ownership of `tunify.com`) or `com.thestbar.tunify` (would imply ownership of `thestbar.com`).
 - No `versionCode` bump beyond the standard +1 / `versionName` 2.0.
 
 ## Decisions
@@ -28,7 +28,7 @@
 |---|---|---|
 | Migration style | **Idiomatic Kotlin** | Coroutines/Flow replace RxJava entirely; proper `ViewModelProvider`; `data class`, `object`, `@Parcelize` everywhere applicable. |
 | Adjacent improvements | **Adopt ViewBinding** | Pairs naturally with Kotlin migration; fragments are full of `findViewById`. |
-| Package | **`com.thestbar.tunify`** | Follows reverse-DNS convention using the developer's handle; avoids implying ownership of `tunify.com`. |
+| Package | **`dev.thestbar.tunify`** | Strict reverse-DNS based on `thestbar.dev`, a domain the developer owns. Convention-compliant. |
 | Verification | **Pure-logic unit tests** added during Phase 1 | The pitch detection logic is pure JVM code — easy, high-value tests. |
 | Test scope | **Yin, NoteDetection, NotesStructure, Note, GuitarTuning, Tuning, TuningHandler** | Pure logic with no Android dependency. |
 | Mocking | **None** | Test surface is pure functions; no mocks needed. |
@@ -57,7 +57,7 @@
 ### Package layout after migration
 
 ```
-app/src/main/java/com/thestbar/tunify/
+app/src/main/java/dev/thestbar/tunify/
 ├── core/
 │   ├── PreferencesDataStoreHandler.kt   (object)
 │   ├── RecordingRunnable.kt
@@ -91,7 +91,7 @@ app/src/main/java/com/thestbar/tunify/
         ├── Note.kt                       (data class)
         └── NotesStructure.kt             (object)
 
-app/src/test/java/com/thestbar/tunify/
+app/src/test/java/dev/thestbar/tunify/
 ├── data/
 │   ├── TuningHandlerTest.kt
 │   └── entities/
@@ -114,7 +114,7 @@ app/src/test/java/com/thestbar/tunify/
 2. Add to version catalog: `kotlinx-coroutines-android`, `kotlinx-coroutines-test`, `androidx.lifecycle:lifecycle-viewmodel-ktx`, `androidx.lifecycle:lifecycle-runtime-ktx`, `androidx.fragment:fragment-ktx`, `androidx.activity:activity-ktx`.
 3. Enable ViewBinding (`buildFeatures { viewBinding = true }`).
 4. Apply `kotlin-parcelize` plugin.
-5. Rename package: update `namespace` and `applicationId` in `app/build.gradle.kts`, move source folders `com/junkiedan/junkietuner/` → `com/thestbar/tunify/`, rewrite `package` declarations and imports in every `.java` file in this single commit. Update `AndroidManifest.xml` activity reference.
+5. Rename package: update `namespace` and `applicationId` in `app/build.gradle.kts`, move source folders `com/junkiedan/junkietuner/` → `dev/thestbar/tunify/`, rewrite `package` declarations and imports in every `.java` file in this single commit. Update `AndroidManifest.xml` activity reference.
 
 **Verification:** `./gradlew assembleDebug` succeeds, app installs and launches on emulator, smoke test (open each fragment) still works.
 
@@ -156,7 +156,7 @@ Each file: convert to idiomatic Kotlin and add its test file in the same commit.
 - `TuningTest.kt` (with the `Tuning` entity commit) — verify `notesFormatted()` produces `"E2  A2  D3  G3  B3  E4"` (double-space separator) from the canonical `"[E2,A2,D3,G3,B3,E4]"` input; check edge cases (empty bracket pair, single note, sharps).
 - `TuningHandlerTest.kt` (with the `TuningHandler` commit) — `getNotesStringFromNotesArray()` and `getGuitarTuningFromTuning()` are pure round-trippable functions; verify a tuning string parses to the correct notes and the notes serialize back to the original string. `resetDatabaseValuesToDefault()` is not tested (it depends on a real repository).
 
-**Verification at the end of Phase 2:** Because the Java UI in `app/src/main/java/com/thestbar/tunify/core/` still calls the old static `TuningViewModel.insert()` API and the old `Flowable`-returning DataStore methods, the **app module will not compile at the end of Phase 2 in isolation**. This is expected. The Phase 2 commits are reviewable independently, but the build only returns to green when Phase 3 rewires the UI callers. Final verification happens at end of Phase 3.
+**Verification at the end of Phase 2:** Because the Java UI in `app/src/main/java/dev/thestbar/tunify/core/` still calls the old static `TuningViewModel.insert()` API and the old `Flowable`-returning DataStore methods, the **app module will not compile at the end of Phase 2 in isolation**. This is expected. The Phase 2 commits are reviewable independently, but the build only returns to green when Phase 3 rewires the UI callers. Final verification happens at end of Phase 3.
 
 ### Phase 3 — UI layer (8 commits)
 
