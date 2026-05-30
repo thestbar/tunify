@@ -80,6 +80,11 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, systemBars.bottom)
             insets
         }
+        ViewCompat.setOnApplyWindowInsetsListener(binding.fragmentContainerView) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(v.paddingLeft, systemBars.top, v.paddingRight, v.paddingBottom)
+            insets
+        }
     }
 
     private fun initDatabase() {
