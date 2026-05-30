@@ -24,7 +24,7 @@ import com.github.anastr.speedviewlib.SpeedView;
 import com.github.anastr.speedviewlib.components.Section;
 import com.github.anastr.speedviewlib.components.Style;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.junkiedan.junkietuner.R;
 import com.junkiedan.junkietuner.core.PreferencesDataStoreHandler;
 import com.junkiedan.junkietuner.core.RecordingRunnable;
@@ -74,7 +74,7 @@ public class MainFragment extends Fragment {
     // The buffer that will be used to store the RAW input.
     private short[] buffer = null;
     // Reference to the switch that enables/disables tuning.
-    private SwitchMaterial tuningSwitch = null;
+    private MaterialSwitch tuningSwitch = null;
     // Reference to the TextView that displays the note that is
     // closest to pitch detected by the PD algorithm.
     private TextView pitchTextView = null;

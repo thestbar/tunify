@@ -152,7 +152,7 @@
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
+    <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/tuningSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

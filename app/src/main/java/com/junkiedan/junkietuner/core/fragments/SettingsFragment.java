@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textview.MaterialTextView;
 import com.junkiedan.junkietuner.R;
 import com.junkiedan.junkietuner.core.PreferencesDataStoreHandler;
@@ -29,9 +29,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class SettingsFragment extends Fragment {
 
     // Reference to the 'Lock Tuner' Switch.
-    private SwitchMaterial lockTunerSwitch;
+    private MaterialSwitch lockTunerSwitch;
     // Reference to the 'Load Last Muted State' Switch.
-    private SwitchMaterial loadLastMutedStateSwitch;
+    private MaterialSwitch loadLastMutedStateSwitch;
     // Reference to 'Reset Tunings Database' TextView.
     private MaterialTextView resetDatabaseTextView;
 
