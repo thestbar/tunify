@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import dev.thestbar.tunify.data.dao.TuningDao
 import dev.thestbar.tunify.data.entities.Tuning
 
-@Database(entities = [Tuning::class], version = 1)
+@Database(entities = [Tuning::class], version = 1, exportSchema = false)
 abstract class TunifyDatabase : RoomDatabase() {
 
     abstract fun tuningDao(): TuningDao
