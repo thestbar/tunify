@@ -1,7 +1,10 @@
 package dev.thestbar.tunify.core
 
 import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
 import android.os.Vibrator
+import android.os.VibratorManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -24,7 +27,6 @@ class TuningAdapter(
 ) : RecyclerView.Adapter<TuningAdapter.ViewHolder>() {
 
     private lateinit var context: Context
-    private var vibrator: Vibrator? = null
 
     fun setTuningList(tuningList: List<Tuning>) {
         this.tuningList = tuningList
@@ -45,7 +47,6 @@ class TuningAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
-        vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
         val binding = TuningListItemBinding.inflate(
             LayoutInflater.from(context), parent, false
         )
@@ -64,12 +65,12 @@ class TuningAdapter(
             viewModel.delete(tuning)
         }
         holder.binding.root.setOnLongClickListener {
-            vibrator?.vibrate(60)
+            context.vibrate(60)
             AddTuningDialogFragment(tuning).show(fragmentManager, "EditTuningDialogFragment")
             true
         }
         holder.binding.root.setOnClickListener {
-            vibrator?.vibrate(60)
+            context.vibrate(60)
             Log.d(
                 "TuningAdapter.onClick",
                 "Value: $tuning has been selected as default Tuning"
@@ -88,5 +89,23 @@ class TuningAdapter(
 
     companion object {
         private val viewHolderMap: MutableMap<Int, ViewHolder> = HashMap()
+    }
+}
+
+private fun Context.vibrate(milliseconds: Long) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val manager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+        manager?.defaultVibrator?.vibrate(
+            VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE)
+        )
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        @Suppress("DEPRECATION")
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+        vibrator?.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE))
+    } else {
+        @Suppress("DEPRECATION")
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+        @Suppress("DEPRECATION")
+        vibrator?.vibrate(milliseconds)
     }
 }
