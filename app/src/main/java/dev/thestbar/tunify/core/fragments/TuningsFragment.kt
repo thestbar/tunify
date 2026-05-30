@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -59,6 +61,12 @@ class TuningsFragment : Fragment() {
 
         binding.addTuningButton.setOnClickListener {
             AddTuningDialogFragment().show(childFragmentManager, "AddTuningDialogFragment")
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.tuningsList) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, systemBars.bottom)
+            insets
         }
     }
 
