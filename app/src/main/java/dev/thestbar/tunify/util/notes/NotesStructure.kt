@@ -15,19 +15,15 @@ object NotesStructure {
         "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
     )
 
-    @JvmStatic
     val allNotes: Array<Note> by lazy { buildAllNotes() }
 
-    @JvmStatic
     val notesAsStringArray: Array<String> by lazy {
         Array(allNotes.size) { allNotes[it].name }
     }
 
-    @JvmStatic
     fun searchNote(noteName: String): Note? =
         allNotes.firstOrNull { it.name == noteName }
 
-    @JvmStatic
     fun searchNoteIndex(noteName: String): Int =
         allNotes.indexOfFirst { it.name == noteName }
 

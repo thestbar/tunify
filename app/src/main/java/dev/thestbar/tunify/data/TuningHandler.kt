@@ -6,7 +6,6 @@ import dev.thestbar.tunify.util.notes.Note
 
 object TuningHandler {
 
-    @JvmStatic
     fun getGuitarTuningFromTuning(tuning: Tuning): GuitarTuning {
         val notesStr = tuning.notes.substring(1, tuning.notes.length - 1)
         val notes = notesStr.split(",").toTypedArray()
@@ -14,7 +13,6 @@ object TuningHandler {
         return GuitarTuning(tuning.name, notes)
     }
 
-    @JvmStatic
     fun getNotesStringFromNotesArray(notes: Array<Note>): String =
         notes.joinToString(separator = ",", prefix = "[", postfix = "]") { it.name }
 

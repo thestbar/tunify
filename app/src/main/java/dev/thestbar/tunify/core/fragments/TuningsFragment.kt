@@ -69,7 +69,6 @@ class TuningsFragment : Fragment() {
     }
 
     companion object {
-        @JvmStatic
         fun newInstance(): TuningsFragment = TuningsFragment()
     }
 }

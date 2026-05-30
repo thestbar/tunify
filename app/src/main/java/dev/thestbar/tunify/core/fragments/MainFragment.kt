@@ -294,7 +294,6 @@ class MainFragment : Fragment() {
         private const val SWITCH_TURNED_ON_STR = "Tuning"
         private const val SWITCH_TURNED_OFF_STR = "Muted"
 
-        @JvmStatic
         fun newInstance(): MainFragment = MainFragment()
     }
 }
