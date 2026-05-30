@@ -32,6 +32,11 @@
     <string name="background_color_image">Background Color Image</string>
     <string name="delete_item_button">Delete Item Button</string>
     <string name="add_tuning_button">Add Tuning Button</string>
+    <string name="sort_button">Sort tunings</string>
+    <string name="search_tuning_hint">Search tunings…</string>
+    <string name="sort_default">Default (creation date)</string>
+    <string name="sort_name_asc">Name A → Z</string>
+    <string name="sort_name_desc">Name Z → A</string>
     <string name="add_tuning_dialog_title">Add Tuning</string>
     <string name="cancel_button">Cancel</string>
     <string name="ok_button">OK</string>
