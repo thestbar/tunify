@@ -51,16 +51,11 @@ dependencies {
     // Room
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
-    implementation(libs.room.rxjava3)
     implementation(libs.room.guava)
     testImplementation(libs.room.testing)
     implementation(libs.room.paging)
     // DataStore
     implementation(libs.datastore.preferences)
-    implementation(libs.datastore.preferences.rxjava3)
-    // RxJava (still required until Phase 4)
-    implementation(libs.rxandroid)
-    implementation(libs.rxjava3)
     // Audio DSP
     implementation(libs.jtransforms)
     implementation(libs.speedviewlib)
