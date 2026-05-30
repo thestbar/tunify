@@ -62,7 +62,7 @@ public class RecordingRunnable extends Thread {
         this.recordingInProgress = recordingInProgress;
         this.recorder = recorder;
         this.inputBuffer = inputBuffer;
-        yinInstance = Yin.getInstance(recorder.getSampleRate());
+        yinInstance = new Yin((double) recorder.getSampleRate());
         if (noteDetection == null) {
             noteDetection = new NoteDetection(NotesStructure.getAllNotes());
         }
