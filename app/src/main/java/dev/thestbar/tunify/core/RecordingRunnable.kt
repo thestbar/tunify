@@ -8,9 +8,8 @@ import dev.thestbar.tunify.util.algorithms.NoteDetection
 import dev.thestbar.tunify.util.algorithms.Yin
 import dev.thestbar.tunify.util.notes.NotesStructure
 import java.util.concurrent.atomic.AtomicBoolean
+import dev.thestbar.tunify.core.fragments.MainFragment.Companion.NEEDLE_ANIMATION_SPEED
 import kotlin.math.roundToLong
-
-private const val NEEDLE_ANIMATION_SPEED = 300L
 
 class RecordingRunnable(
     private val mainActivity: Activity,
