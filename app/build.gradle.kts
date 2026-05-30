@@ -1,18 +1,20 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.plugin.parcelize")
+    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "com.junkiedan.junkietuner"
+    namespace = "dev.thestbar.tunify"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.junkiedan.junkietuner"
+        applicationId = "dev.thestbar.tunify"
         minSdk = 24
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -32,29 +34,34 @@ android {
     kotlinOptions {
         jvmTarget = "21"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.espresso.core)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.kotlinx.coroutines.android)
     // Room
     implementation(libs.room.runtime)
-    annotationProcessor(libs.room.compiler)
-    implementation(libs.room.rxjava3)
+    ksp(libs.room.compiler)
     implementation(libs.room.guava)
     testImplementation(libs.room.testing)
     implementation(libs.room.paging)
     // DataStore
     implementation(libs.datastore.preferences)
-    implementation(libs.datastore.preferences.rxjava3)
-    // RxJava
-    implementation(libs.rxandroid)
-    implementation(libs.rxjava3)
     // Audio DSP
     implementation(libs.jtransforms)
     implementation(libs.speedviewlib)
+    // Test
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.espresso.core)
 }
