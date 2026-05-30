@@ -160,6 +160,7 @@
         android:text="@string/switchMuted"
         android:textColor="@color/custom_linen"
         android:textSize="18sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintTop_toTopOf="parent" />

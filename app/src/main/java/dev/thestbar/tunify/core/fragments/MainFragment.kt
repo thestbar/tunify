@@ -266,6 +266,8 @@ class MainFragment : Fragment() {
 
     private fun setSwitchChecked(value: Boolean) {
         binding.tuningSwitch.isChecked = value
+        binding.tuningSwitch.text = if (value) SWITCH_TURNED_ON_STR else SWITCH_TURNED_OFF_STR
+        binding.tuningSwitch.visibility = View.VISIBLE
         viewLifecycleOwner.lifecycleScope.launch {
             PreferencesDataStoreHandler.setIsTuning(requireContext(), value)
         }
