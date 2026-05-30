@@ -42,7 +42,6 @@ class TuningsFragment : Fragment() {
                 .first() ?: -1
 
             val adapter = TuningAdapter(
-                tuningList = emptyList(),
                 fragmentManager = childFragmentManager,
                 selectedItemId = initSelectedItemId,
                 viewModel = viewModel,
@@ -53,7 +52,7 @@ class TuningsFragment : Fragment() {
 
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.allTunings.collect { tunings ->
-                    adapter.setTuningList(tunings)
+                    adapter.submitList(tunings)
                 }
             }
         }
@@ -69,7 +68,6 @@ class TuningsFragment : Fragment() {
     }
 
     companion object {
-        @JvmStatic
         fun newInstance(): TuningsFragment = TuningsFragment()
     }
 }

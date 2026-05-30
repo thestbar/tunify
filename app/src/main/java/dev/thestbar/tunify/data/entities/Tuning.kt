@@ -6,10 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Tuning(
-    @JvmField @ColumnInfo(name = "name") var name: String,
-    @JvmField @ColumnInfo(name = "notes") var notes: String
+    @ColumnInfo(name = "name") var name: String,
+    @ColumnInfo(name = "notes") var notes: String
 ) {
-    @JvmField
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
 

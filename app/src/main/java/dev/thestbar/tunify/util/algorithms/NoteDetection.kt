@@ -35,14 +35,12 @@ class NoteDetection(private val allNotes: Array<Note>) {
     companion object {
         private val LOG2_TO_LOG10_CONVERSION_CONST = 1200.0 * (1 / log10(2.0))
 
-        @JvmStatic
         fun compareClosestNoteToTarget(note1: Note, note2: Note, frequency: Double): Note {
             val delta1 = abs(note1.frequency - frequency)
             val delta2 = abs(note2.frequency - frequency)
             return if (delta1 < delta2) note1 else note2
         }
 
-        @JvmStatic
         fun getDifferentInCents(note: Note?, frequency: Double): Double {
             if (note == null || note.frequency == 0.0) return -1.0
             val delta = frequency / note.frequency

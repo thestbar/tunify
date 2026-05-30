@@ -50,7 +50,6 @@ class RecordingRunnable(
         @Volatile
         private var noteDetection: NoteDetection? = null
 
-        @JvmStatic
         @Synchronized
         fun setNoteDetection(newNoteDetection: NoteDetection) {
             noteDetection = newNoteDetection
