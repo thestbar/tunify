@@ -2,7 +2,7 @@
 
 Tunify is an open source and free Guitar Tuner Android application. It is developed implementing the Yin algorithm for pitch detection. You can find more information about the specific algorithm on the relevant [paper](http://recherche.ircam.fr/equipes/pcm/cheveign/ps/2002_JASA_YIN_proof.pdf) published by Alain de Cheveigné and Hideki Kawahara in 2001.
 
-Currently I am writing an article were I explain how the algorithm was developed and also I will start the engagement to deploy the application to Android's Play Store. When the article is ready you will be able to find it on my personal website [stavrosbarousis.com](https://stavrosbarousis.com). 
+Currently I am writing an article were I explain how the algorithm was developed and also I will start the engagement to deploy the application to Android's Play Store. When the article is ready you will be able to find it on my personal website [thestbar.dev](https://thestbar.dev). 
 
 The android code is written in Kotlin.
 
