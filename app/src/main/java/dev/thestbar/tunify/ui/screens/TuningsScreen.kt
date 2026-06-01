@@ -70,10 +70,10 @@ private val STRING_LABELS = listOf("6th (low)", "5th", "4th", "3rd", "2nd", "1st
 private val DEFAULT_NOTES = listOf("E" to "2", "A" to "2", "D" to "3", "G" to "3", "B" to "3", "E" to "4")
 
 private val SORT_OPTIONS = listOf(
-    SortOrder.DEFAULT  to "Default (Old first)",
-    SortOrder.ID_DESC to "New first",
-    SortOrder.NAME_ASC to "Name  A → Z",
-    SortOrder.NAME_DESC to "Name  Z → A"
+    SortOrder.DEFAULT  to "Date (Older first)",
+    SortOrder.ID_DESC to "Date (Newer first)",
+    SortOrder.NAME_ASC to "Name (A to Z)",
+    SortOrder.NAME_DESC to "Name (Z to A)"
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
