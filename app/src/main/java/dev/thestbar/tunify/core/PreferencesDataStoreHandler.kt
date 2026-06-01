@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dev.thestbar.tunify.data.preferences.ThemePreference
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -17,6 +19,7 @@ object PreferencesDataStoreHandler {
     private val IS_TUNER_LOCKED = booleanPreferencesKey("is_tuner_locked")
     private val IS_LOAD_LAST_MUTED_STATE = booleanPreferencesKey("is_load_last_muted_state")
     private val IS_TUNING = booleanPreferencesKey("is_tuning")
+    private val THEME_PREFERENCE = stringPreferencesKey("theme_preference")
 
     fun hasBeenInitialized(context: Context): Flow<Boolean?> =
         context.dataStore.data.map { it[HAS_BEEN_INITIALIZED] }
@@ -51,5 +54,18 @@ object PreferencesDataStoreHandler {
 
     suspend fun setIsTuning(context: Context, value: Boolean) {
         context.dataStore.edit { it[IS_TUNING] = value }
+    }
+
+    fun getThemePreference(context: Context): Flow<ThemePreference> =
+        context.dataStore.data.map { prefs ->
+            when (prefs[THEME_PREFERENCE]) {
+                "LIGHT" -> ThemePreference.LIGHT
+                "DARK"  -> ThemePreference.DARK
+                else    -> ThemePreference.SYSTEM
+            }
+        }
+
+    suspend fun setThemePreference(context: Context, value: ThemePreference) {
+        context.dataStore.edit { it[THEME_PREFERENCE] = value.name }
     }
 }
