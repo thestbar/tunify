@@ -3,6 +3,7 @@ package dev.thestbar.tunify.data.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import dev.thestbar.tunify.data.TuningHandler
 import dev.thestbar.tunify.data.TuningRepository
 import dev.thestbar.tunify.data.entities.Tuning
 import kotlinx.coroutines.flow.Flow
@@ -70,5 +71,9 @@ class TuningViewModel(application: Application) : AndroidViewModel(application) 
 
     fun deleteAll() {
         viewModelScope.launch { repository.deleteAll() }
+    }
+
+    fun resetToDefaults() {
+        viewModelScope.launch { TuningHandler.resetDatabaseValuesToDefault(repository) }
     }
 }
