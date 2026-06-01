@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.parcelize")
     alias(libs.plugins.ksp)
 }
@@ -35,7 +36,7 @@ android {
         jvmTarget = "21"
     }
     buildFeatures {
-        viewBinding = true
+        compose = true
     }
     lint {
         disable += "NullSafeMutableLiveData"
@@ -43,16 +44,21 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.kotlinx.coroutines.android)
+    // Compose BOM
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
+    debugImplementation(libs.compose.ui.tooling)
     // Room
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
@@ -63,7 +69,6 @@ dependencies {
     implementation(libs.datastore.preferences)
     // Audio DSP
     implementation(libs.jtransforms)
-    implementation(libs.speedviewlib)
     // Test
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
