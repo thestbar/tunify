@@ -55,6 +55,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.thestbar.tunify.data.TuningHandler
 import dev.thestbar.tunify.data.entities.Tuning
@@ -69,7 +70,8 @@ private val STRING_LABELS = listOf("6th (low)", "5th", "4th", "3rd", "2nd", "1st
 private val DEFAULT_NOTES = listOf("E" to "2", "A" to "2", "D" to "3", "G" to "3", "B" to "3", "E" to "4")
 
 private val SORT_OPTIONS = listOf(
-    SortOrder.DEFAULT  to "Default (creation date)",
+    SortOrder.DEFAULT  to "Default (Old first)",
+    SortOrder.ID_DESC to "New first",
     SortOrder.NAME_ASC to "Name  A → Z",
     SortOrder.NAME_DESC to "Name  Z → A"
 )
@@ -455,6 +457,7 @@ private fun NoteNameDropdown(value: String, onSelect: (String) -> Unit, modifier
             value = value,
             onValueChange = {},
             readOnly = true,
+            singleLine = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
             textStyle = MaterialTheme.typography.bodyMedium,
@@ -480,9 +483,9 @@ private fun OctaveDropdown(value: String, onSelect: (String) -> Unit, modifier: 
             value = value,
             onValueChange = {},
             readOnly = true,
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            singleLine = true,
             modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
-            textStyle = MaterialTheme.typography.bodyMedium,
+            textStyle = MaterialTheme.typography.bodyMedium.copy(textAlign = TextAlign.Center),
             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
         )
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
