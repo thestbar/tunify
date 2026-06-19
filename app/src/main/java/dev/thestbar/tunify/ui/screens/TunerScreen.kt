@@ -51,6 +51,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.thestbar.tunify.data.viewmodels.TunerUiState
+import dev.thestbar.tunify.ui.util.KeepScreenOn
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -76,6 +77,8 @@ fun TunerScreen(
     onToggleTuning: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    KeepScreenOn(enabled = state.isTuning)
+
     var selectedStringIndex by remember { mutableStateOf(0) }
 
     Column(
